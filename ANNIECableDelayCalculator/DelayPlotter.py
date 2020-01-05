@@ -11,20 +11,26 @@ if __name__=='__main__':
     df = pd.DataFrame(dat)
     TUBES = np.array(list(set(df["channel"])))
     TUBES = np.arange(332,460,1)
-    #for cnum in TUBES:
-    #    if cnum not in list(df["channel"]):
-    #        print("DID NOT FIND ANY DATA FOR CHANNELNUM %i"%(cnum))
-    #        continue
-    mintime = np.min(df["mu"])
+    for cnum in TUBES:
+        if cnum not in list(df["channel"]):
+            print("DID NOT FIND ANY DATA FOR CHANNELNUM %i"%(cnum))
+            continue
     fig,ax = plt.subplots()
-    myx = df.loc[((df["LED"] == 0)), "mu"] - mintime
-    myxunc = df.loc[((df["LED"] == 0)), "mu_unc"]
-    myy = df.loc[((df["LED"] == 0)), "channel"]
-    ax.errorbar(myx,myy,xerr=myxunc,alpha=0.8,label="LED 0 Delays",linestyle='None',marker='o',markersize=6)
+    LEDs = np.arange(0,6,1)
+    for led in LEDs:
+        mintime = np.min(df[(df.LED==led)].mu.values)
+        print("MINTIME: " + str(mintime))
+        myx = df.loc[((df["LED"] == led)), "mu"] - mintime
+        myxunc = df.loc[((df["LED"] == led)), "mu_unc"]
+        myy = df.loc[((df["LED"] == led)), "channel"]
+        ax.errorbar(myx,myy,xerr=myxunc,alpha=0.8,label="LED %i Delays"%(led),linestyle='None',marker='o',markersize=6)
     #ax.bar(y = myy,x = range(len(myx)), yerr = myyerr,label = cnum)
     #ax.xticks(range(len(myx)),myx)
     print(myx)
     print(myy)
+    leg = plt.legend(loc=2,fontsize=15)
+    leg.set_frame_on(True)
+    leg.draw_frame(True)
     ax.set_xlabel("Time delay relative to earliest (ns)") 
     ax.set_ylabel("Channel Key") 
     plt.title(("Mean LED arrival time relative to earliest mean"))

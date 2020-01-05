@@ -2,6 +2,8 @@ import numpy as np
 import json
 import ROOT
 import sys
+import matplotlib.pyplot as plt
+import math
 
 import lib.ArgParser as ap
 import lib.Functions as fu
@@ -149,6 +151,11 @@ if __name__=='__main__':
                 LED_evts = evts[window_inds]
                 WMean = WeightedMean(LED_evts,LED_bins)
                 WSEM = np.sqrt(WeightedSEM(LED_evts,LED_bins))
+                if math.isnan(WMean):
+                    print("NO DATA FOR PEAKS.  TUBE WAS LIKELY OFF")
+                    missing["channel"].append(channel_num)
+                    missing["LED"].append(LEDMAP[j])
+                    continue
                 print("WEIGHTED MEAN: %f"%(WeightedMean(LED_evts,LED_bins)))
                 print("WEIGHTED STD: %f"%(WeightedStd(LED_evts,LED_bins)))
                 print("WEIGHTED SEM: %f"%(np.sqrt(WeightedSEM(LED_evts,LED_bins))))
@@ -200,6 +207,11 @@ if __name__=='__main__':
                 LED_evts = evts[window_inds]
                 WMean = WeightedMean(LED_evts,LED_bins)
                 WSEM = np.sqrt(WeightedSEM(LED_evts,LED_bins))
+                if math.isnan(WMean):
+                    print("NO DATA FOR PEAKS.  TUBE WAS LIKELY OFF")
+                    missing["channel"].append(channel_num)
+                    missing["LED"].append(LEDMAP[j])
+                    continue
                 print("WEIGHTED MEAN: %f"%(WeightedMean(LED_evts,LED_bins)))
                 print("WEIGHTED STD: %f"%(WeightedStd(LED_evts,LED_bins)))
                 print("WEIGHTED SEM: %f"%(np.sqrt(WeightedSEM(LED_evts,LED_bins))))
