@@ -1,0 +1,8 @@
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 171
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.315508,36.2234,133.08
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.3583,-0.0532378,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.315508
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,133.08
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,6.53571,5638.85

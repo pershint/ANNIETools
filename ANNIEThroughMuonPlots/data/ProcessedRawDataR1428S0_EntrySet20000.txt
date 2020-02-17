@@ -1,0 +1,65 @@
+[1]: Loading entry 20738 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1428S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 18 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 164
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.550572,95.1466,47.96
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,0.929558,-0.202999,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.550572
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,47.96
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.17818,4388.88
+[1]: Loading entry 21820 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1428S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 18 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 185
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.0570128,77.3653,120.97
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,0.746545,-0.203,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.0570128
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,120.97
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.86942,5004.29
+[1]: Loading entry 22693 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1428S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 5 in chankey_to_mrdpmtid map.
+[1]: TimeClustering tool: Did not find channelkey 25 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 180
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.297844,25.7712,47.96
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,0.158767,-0.202999,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.297844
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,47.96
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.92237,5024.73
+[1]: Loading entry 23236 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1428S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 9 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 133
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.550608,86.3739,60.42
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.294449,0.812,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.550608
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,60.42
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,3.4923,2963.39

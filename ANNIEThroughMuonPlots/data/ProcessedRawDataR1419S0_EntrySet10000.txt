@@ -1,0 +1,17 @@
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 184
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 1.49012e-08,60.9,133.08
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,0,-0.609,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,1.49012e-08
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,133.08
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.53854,4720.16
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 163
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.665653,82.1424,108.86
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.756239,0.320687,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.665653
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,108.86
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.92086,4916.37

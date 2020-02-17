@@ -1,0 +1,35 @@
+[1]: Loading entry 24675 from the ANNIEEvent input file "/annie/app/users/pershint/ToolAnalysis/ProcessedRawDataR1488S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 23 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 158
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.688462,87.0415,72.53
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,0.480433,-0.725815,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.688462
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,72.53
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,7.32765,6170.13
+[1]: Loading entry 25948 from the ANNIEEvent input file "/annie/app/users/pershint/ToolAnalysis/ProcessedRawDataR1488S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 2 in chankey_to_mrdpmtid map.
+[1]: TimeClustering tool: Did not find channelkey 4 in chankey_to_mrdpmtid map.
+[1]: TimeClustering tool: Did not find channelkey 15 in chankey_to_mrdpmtid map.
+[1]: TimeClustering tool: Did not find channelkey 17 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 203
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.362385,96.1999,133.08
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.613051,0.741357,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.362385
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,133.08
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.53885,4740.76

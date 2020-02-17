@@ -1,0 +1,16 @@
+[1]: Loading entry 62754 from the ANNIEEvent input file "/annie/app/users/pershint/ToolAnalysis/ProcessedRawDataR1489S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 7 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 155
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.550626,68.6763,60.42
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.317541,-0.608943,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.550626
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,60.42
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.37301,4612.43

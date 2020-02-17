@@ -1,0 +1,33 @@
+[1]: Loading entry 75329 from the ANNIEEvent input file "/annie/app/users/pershint/ToolAnalysis/ProcessedRawDataR1488S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 3 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 128
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.39009,96.4541,120.97
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.747971,-0.608999,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.39009
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,120.97
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,1.9639,1712.91
+[1]: Loading entry 76117 from the ANNIEEvent input file "/annie/app/users/pershint/ToolAnalysis/ProcessedRawDataR1488S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 3 in chankey_to_mrdpmtid map.
+[1]: TimeClustering tool: Did not find channelkey 4 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 170
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.550608,50.1534,47.96
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.294449,0.405999,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.550608
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,47.96
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.70873,4966.25

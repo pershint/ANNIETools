@@ -1,0 +1,24 @@
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 180
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.498455,47.6426,133.08
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,0.431022,0.202981,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.498455
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,133.08
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.2795,4435.7
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 165
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.157185,43.2014,120.97
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.147649,0.406,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.157185
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,120.97
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.03903,4282.68
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 92
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.327291,83.2962,133.08
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,0.820543,-0.143304,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.327291
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,133.08
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,0.993914,821.105

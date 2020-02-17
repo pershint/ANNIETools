@@ -1,0 +1,376 @@
+[1]: Loading entry 40088 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 83
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.386804,85.9079,60.42
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.306,-0.802733,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.386804
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,60.42
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,0.592465,485.414
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40089 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 2
+[1]: SimpleTankEnergyCalculator Tool: Hit count 2 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40090 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 2
+[1]: SimpleTankEnergyCalculator Tool: Hit count 2 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[2]: SimpleTankEnergyCalibrator tool: No Veto hits, so not a through-going muon candidate
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40091 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 1
+[1]: SimpleTankEnergyCalculator Tool: Hit count 1 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40092 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 2
+[1]: SimpleTankEnergyCalculator Tool: Hit count 2 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40093 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 0
+[1]: SimpleTankEnergyCalculator Tool: Hit count 0 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40094 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 5
+[1]: SimpleTankEnergyCalculator Tool: Hit count 5 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40095 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: TimeClustering tool: Did not find channelkey 9 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 0
+[1]: SimpleTankEnergyCalculator Tool: Hit count 0 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40096 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 1
+[1]: SimpleTankEnergyCalculator Tool: Hit count 1 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40097 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 2
+[1]: SimpleTankEnergyCalculator Tool: Hit count 2 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40098 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 2
+[1]: SimpleTankEnergyCalculator Tool: Hit count 2 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40099 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 4
+[1]: SimpleTankEnergyCalculator Tool: Hit count 4 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[2]: SimpleTankEnergyCalibrator tool: No Veto hits, so not a through-going muon candidate
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40100 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 0
+[1]: SimpleTankEnergyCalculator Tool: Hit count 0 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40101 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 4
+[1]: SimpleTankEnergyCalculator Tool: Hit count 4 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[2]: SimpleTankEnergyCalibrator tool: No Veto hits, so not a through-going muon candidate
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40102 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 23 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 5
+[1]: SimpleTankEnergyCalculator Tool: Hit count 5 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40103 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 133
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40104 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 2
+[1]: SimpleTankEnergyCalculator Tool: Hit count 2 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40105 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 3
+[1]: SimpleTankEnergyCalculator Tool: Hit count 3 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40106 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 3
+[1]: SimpleTankEnergyCalculator Tool: Hit count 3 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40107 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 3
+[1]: SimpleTankEnergyCalculator Tool: Hit count 3 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40108 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 5
+[1]: SimpleTankEnergyCalculator Tool: Hit count 5 not over threshold
+[1]: SimpleTankEnergyCalculator Tool: Either zero or more than two reconstructed tracks.
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: -9999,1.41407e+06,-999900
+[1]: SimpleTankEnergyCalibrator tool: Reco Track criteria doesn't satisfy requirements.
+[3]: ANNIEEvent store has 101642 entries
+[1]: Loading entry 40109 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: TimeClustering tool: Did not find channelkey 4 in chankey_to_mrdpmtid map.
+[1]: TimeClustering tool: Did not find channelkey 17 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 179
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.263272,45.3348,133.08
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.406343,0.201024,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.263272
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,133.08
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.5944,4801.34
+[1]: Loading entry 42835 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 15 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 143
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.429005,72.6376,120.97
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,0.608462,0.396732,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.429005
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,120.97
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,4.30819,3606.53
+[1]: Loading entry 45007 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 185
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.146688,19.6649,133.08
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.125111,0.151716,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.146688
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,133.08
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.42773,4636.24
+[1]: Loading entry 45208 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: TimeClustering tool: Did not find channelkey 12 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 154
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.482166,81.298,72.53
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,-0.0399056,-0.812,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.482166
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,72.53
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,3.14071,2654.03
+[1]: Loading entry 47109 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 1 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 116
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.397342,23.3122,72.53
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,0.129665,-0.193733,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.397342
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,72.53
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,1.34191,1139.94
+[1]: Loading entry 48033 from the ANNIEEvent input file "/pnfs/annie/persistent/users/pershint/ProcessedData/V0/ProcessedRawDataR1432S0"
+[1]: Setting CalibratedADCData
+[1]: Set CalibratedADCData
+[2]: Tool TimeClustering: finding time clusters in next event
+[1]: TimeClustering tool: Data file: Getting TDCData object
+[1]: TimeClustering tool: Did not find channelkey 7 in chankey_to_mrdpmtid map.
+[1]: Setting MRDTracks
+[1]: Setting subevptr in CStore
+[1]: SimpleTankEnergyCalculator Tool: Hit count is 179
+[2]: SimpleTankEnergyCalibrator tool: Looping over FACC/MRD hits... looking for Veto activity
+[1]: SimpleTankEnergyCalibrator tool: TrackAngle,EntryPointRadius,PenetrationDepth: 0.123593,61.836,133.08
+[1]: SimpleTankEnergyCalibrator tool: THROUGH-GOING MUON CANDIDATE FOUND.
+[1]: SimpleTankEnergyCalibrator tool: ENTRYX,ENTRYY,ENTRYZ,0.612913,-0.0818884,3.255
+[1]: SimpleTankEnergyCalibrator tool: TRACKANGLE,0.123593
+[1]: SimpleTankEnergyCalibrator tool: PENETRATION,133.08
+[1]: SimpleTankEnergyCalibrator tool: CHARGE,PE,5.67868,4744.03
