@@ -51,6 +51,13 @@ def NoPromptClusters(df,clusterTimeCut):
     CleanIndices = np.array(CleanIndices)
     return df.loc[CleanIndices].reset_index(drop=True)
 
+def FilterByEventNumber(df,eventnums):
+    ReturnIndices = []
+    for j in df.index.values:  #disgusting...
+        if df["eventNumber"][j] in eventnums:
+            ReturnIndices.append(j)
+    return df.loc[np.array(ReturnIndices)].reset_index(drop=True)
+
 def ValidPromptClusterEvents(df,clusterTimeCut):
     '''
     Given a dataframe and prompt cut, return all clusters associated

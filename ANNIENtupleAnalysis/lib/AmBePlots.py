@@ -39,14 +39,28 @@ def EstimateLivetime(filelist):
         total_time+=(late_time-early_time)
     return total_time
 
-
-def MakeClusterPEDistribution(df,bins,therange,llabel):
-    '''
-    Plot the time distribution for all clusters in the file.
-    '''
-    plt.hist(df,bins,range=therange,label=llabel,alpha=0.8)
-    plt.xlabel("Cluster time (ns)")
-    plt.title("PE distribution of hit clusters")
+def MakeClusterMultiplicityPlot(df,df_trig):
+    allEvents = df_trig['eventNumber']
+    ClusterMultiplicities = []
+    CurrentEventNum = None
+    Evs_withCluster = []
+    ClusterMultiplicity = 0
+    for j in df.index.values:  #disgusting...
+        if CurrentEventNum is None:
+            CurrentEventNum = df["eventNumber"][j]
+            Evs_withCluster.append(df["eventNumber"][j])
+        if CurrentEventNum != df["eventNumber"][j]:
+            Evs_withCluster.append(df["eventNumber"][j])
+            ClusterMultiplicities.append(ClusterMultiplicity)
+            ClusterMultiplicity=0
+            CurrentEventNum = df["eventNumber"][j]
+        ClusterMultiplicity +=1
+    Evs_withCluster = np.array(Evs_withCluster)
+    allEvents = np.array(allEvents)
+    zero_clusters = np.setdiff1d(allEvents,Evs_withCluster)
+    zeros = np.zeros(len(zero_clusters))
+    MultiplicityData = np.concatenate((ClusterMultiplicities,zeros))
+    return MultiplicityData 
 
 def MakeSiPMVariableDistribution(df, variable, sipm_num, labels, ranges,SingleSiPMPulses):
     '''

@@ -30,7 +30,7 @@ def EventSelectionLosses(df):
     df_cleanPrompt = es.NoPromptClusters(df_cleanSiPM,2000)
     print("TOTAL NUMBER OF EVENTS W/ ONE PULSE IN EACH SIPM AND NO PROMPT CLUSTER: " + str(len(df_cleanPrompt)))
 
-def PlotDemo(Sdf,Bdf):
+def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
     print("EVENT SELECTION LOSSES FOR CENTRAL SOURCE RUN")
     #EventSelectionLosses(Sdf)
 
@@ -59,7 +59,6 @@ def PlotDemo(Sdf,Bdf):
     leg.set_frame_on(True)
     leg.draw_frame(True)
     plt.show()
-
 
     plt.hist(Sdf_SinglePulses['clusterTime'],100,label='Source',alpha=0.8)
     plt.hist(Bdf_SinglePulses['clusterTime'],100,label='No source',alpha=0.8)
@@ -107,14 +106,55 @@ def PlotDemo(Sdf,Bdf):
     leg.draw_frame(True)
     plt.show()
 
+    CleanEventNumbers = Sdf_CleanPrompt["eventNumber"]
+    Sdf_trig_clean = es.FilterByEventNumber(Sdf_trig,CleanEventNumbers)
+    MSData = abp.MakeClusterMultiplicityPlot(Sdf_CleanPrompt,Sdf_trig_clean)
+    print("NUMBER OF TRIGS: " + str(len(MSData)))
+    print("NUMBER OF ZERO MULTIPLICITY TRIGS: " + str(len(np.where(MSData==0)[0])))
+    Sdf_latewindow=Sdf_CleanPrompt.loc[Sdf_CleanPrompt['clusterTime']>20000]
+    CleanEvNum_LW = Sdf_latewindow['eventNumber']
+    MSData_LW = es.FilterByEventNumber(Sdf_trig,CleanEvNum_LW)
+    print("NUMBER OF ZERO MULTIPLICITY TRIGS (LATE WINDOW): " + str(len(np.where(MSData_LW==0)[0])))
+    plt.hist(MSData,bins=20, range=(0,20), label="Source",alpha=0.7)
+    plt.xlabel("Delayed cluster multiplicity")
+    plt.title("Cluster multiplicity for delayed window of central source run \n (One pulse each SiPM, no prompt cluster)")
+    leg = plt.legend(loc=1,fontsize=24)
+    leg.set_frame_on(True)
+    leg.draw_frame(True)
+    plt.show()
+
+    plt.hist(Bdf_SinglePulses['clusterTime'],100,label='No source', color='purple',alpha=0.7)
+    plt.xlabel("Cluster time (ns)")
+    plt.axvline(x=20000,color='black',linewidth=6)
+    plt.axvline(x=65000,color='black',linewidth=6)
+    plt.title("Region to characterize flat background distribution \n (No source data, one pulse in each SiPM)")
+    leg = plt.legend(loc=1,fontsize=24)
+    leg.set_frame_on(True)
+    leg.draw_frame(True)
+    plt.show()
+
+    Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf['clusterTime']>20000)].reset_index(drop=True)
+    plt.hist(MSData,bins=20, range=(0,20), label="Source",alpha=0.7)
+    CleanBkgNumbers = Bdf_latewindow["eventNumber"]
+    Bdf_trig_bkgclean = es.FilterByEventNumber(Bdf_trig,CleanEventNumbers)
+    MBData = abp.MakeClusterMultiplicityPlot(Bdf_latewindow,Bdf_trig)
+    print("NUMBER OF TRIGS: " + str(len(MBData)))
+    print("NUMBER OF ZERO MULTIPLICITY TRIGS (LATE WINDOW): " + str(len(np.where(MBData==0)[0])))
+    plt.hist(MBData,bins=20, range=(0,20), label="No source",alpha=0.7)
+    plt.xlabel("Delayed cluster multiplicity")
+    plt.title("Cluster multiplicity for delayed window of central source run \n (One pulse each SiPM, no prompt cluster)")
+    leg = plt.legend(loc=1,fontsize=24)
+    leg.set_frame_on(True)
+    leg.draw_frame(True)
+    plt.show()
+
     #Plotting the PE distribution
     plt.hist(Sdf_CleanPrompt['clusterPE'],bins=100,range=(0,150),label='Source, >2 $\mu$s',alpha=0.8)
-    Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf['clusterTime']>20000)].reset_index(drop=True)
 
     plt.hist(Bdf_latewindow["clusterPE"],bins=100,range=(0,150),label='No source, >20 $\mu$s',alpha=0.8)
     plt.xlabel("PE")
     plt.title("PE distribution for delayed clusters")
-    leg = plt.legend(loc=4,fontsize=24)
+    leg = plt.legend(loc=1,fontsize=24)
     leg.set_frame_on(True)
     leg.draw_frame(True)
     plt.show()
@@ -141,10 +181,10 @@ def PlotDemo(Sdf,Bdf):
     ranges = {'xbins': 50, 'ybins':50, 'xrange':[0,150],'yrange':[0,1]}
     #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
 
-    Bdf_window = Bdf_latewindow.loc[(Bdf['clusterPE']<150) & \
-            (Bdf['clusterChargeBalance']>0) & (Bdf['clusterChargeBalance']<1)]
-    Sdf_window = Sdf_CleanPrompt.loc[(Sdf['clusterPE']<150) & \
-            (Sdf['clusterChargeBalance']>0) & (Sdf['clusterChargeBalance']<1)]
+    Bdf_window = Bdf_latewindow.loc[(Bdf_latewindow['clusterPE']<150) & \
+            (Bdf_latewindow['clusterChargeBalance']>0) & (Bdf_latewindow['clusterChargeBalance']<1)]
+    Sdf_window = Sdf_CleanPrompt.loc[(Sdf_CleanPrompt['clusterPE']<150) & \
+            (Sdf_CleanPrompt['clusterChargeBalance']>0) & (Sdf_CleanPrompt['clusterChargeBalance']<1)]
     abp.MakeKDEPlot(Bdf_window,'clusterPE','clusterChargeBalance',labels,ranges)
     labels = {'title': 'Comparison of total PE to charge balance parameter', 
             'xlabel': 'Total PE', 'ylabel': 'Charge balance parameter','llabel':'No source',
@@ -154,14 +194,14 @@ def PlotDemo(Sdf,Bdf):
 
     labels = {'title': 'Comparison of total PE to max PE (Source)', 
             'xlabel': 'Total PE', 'ylabel': 'Max PE'}
-    ranges = {'xbins': 100, 'ybins':100, 'xrange':[0,60],'yrange':[0,15]}
+    ranges = {'xbins': 40, 'ybins':40, 'xrange':[0,60],'yrange':[0,15]}
     #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
     abp.Make2DHist(Sdf_CleanPrompt,'clusterPE','clusterMaxPE',labels,ranges)
     abp.ShowPlot()
 
     labels = {'title': 'Comparison of total PE to max PE (No source, >20 $\mu$s)', 
             'xlabel': 'Total PE', 'ylabel': 'Max PE'}
-    ranges = {'xbins': 50, 'ybins':50, 'xrange':[0,60],'yrange':[0,15]}
+    ranges = {'xbins': 40, 'ybins':40, 'xrange':[0,60],'yrange':[0,15]}
     #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
     Bdf_latewindow = Bdf.loc[Bdf['clusterTime']>20000]
     abp.Make2DHist(Bdf_latewindow,'clusterPE','clusterMaxPE',labels,ranges)
@@ -169,14 +209,14 @@ def PlotDemo(Sdf,Bdf):
 
     labels = {'title': 'Comparison of total PE to Charge Point Y-component (Sourcej)', 
             'xlabel': 'Total PE', 'ylabel': 'Charge Point Y'}
-    ranges = {'xbins': 100, 'ybins':100, 'xrange':[0,60],'yrange':[-1,1]}
+    ranges = {'xbins': 40, 'ybins':40, 'xrange':[0,60],'yrange':[-1,1]}
     #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
     abp.Make2DHist(Sdf_CleanPrompt,'clusterPE','clusterChargePointY',labels,ranges)
     abp.ShowPlot()
 
     labels = {'title': 'Comparison of total PE to Charge Point Y-component (No source, >20 $\mu$s)', 
             'xlabel': 'Total PE', 'ylabel': 'Charge Point Y'}
-    ranges = {'xbins': 50, 'ybins':50, 'xrange':[0,60],'yrange':[-1,1]}
+    ranges = {'xbins': 40, 'ybins':40, 'xrange':[0,60],'yrange':[-1,1]}
     #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
     abp.Make2DHist(Bdf_latewindow,'clusterPE','clusterChargePointY',labels,ranges)
     abp.ShowPlot()
@@ -204,6 +244,20 @@ if __name__=='__main__':
         BProcessor.addROOTFile(f1,branches_to_get=mybranches)
     Bdata = BProcessor.getProcessedData()
     Bdf = pd.DataFrame(Bdata)
-    PlotDemo(Sdf,Bdf)
+
+    mybranches = ['eventNumber','clusterTime','SiPMhitQ','SiPMNum','SiPMhitT','hitT','hitQ','SiPMhitAmplitude','clusterChargeBalance','clusterPE','clusterMaxPE','SiPM1NPulses','SiPM2NPulses','clusterChargePointY']
+    SProcessor = rp.ROOTProcessor(treename="phaseIITriggerTree")
+    for f1 in slist:
+        SProcessor.addROOTFile(f1,branches_to_get=mybranches)
+    Sdata = SProcessor.getProcessedData()
+    Sdf_trig = pd.DataFrame(Sdata)
+
+    mybranches = ['eventNumber','clusterTime','SiPMhitQ','SiPMNum','SiPMhitT','hitT','hitQ','SiPMhitAmplitude','clusterChargeBalance','clusterPE','clusterMaxPE','SiPM1NPulses','SiPM2NPulses','clusterChargePointY']
+    BProcessor = rp.ROOTProcessor(treename="phaseIITriggerTree")
+    for f1 in blist:
+        BProcessor.addROOTFile(f1,branches_to_get=mybranches)
+    Bdata = SProcessor.getProcessedData()
+    Bdf_trig = pd.DataFrame(Bdata)
+    PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig)
 
 
