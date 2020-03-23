@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 import scipy.optimize as scp
 import numpy as np
 
-SIGNAL_DIR = "./Data/V1/Pos3P1mData/"
-BKG_DIR = "./Data/V1/BkgCentralData/"
+SIGNAL_DIR = "./Data/Pos3P1mData/"
+BKG_DIR = "./Data/BkgCentralData/"
 
 expoPFlat= lambda x,C1,tau,mu,B: C1*np.exp(-(x-mu)/tau) + B
 

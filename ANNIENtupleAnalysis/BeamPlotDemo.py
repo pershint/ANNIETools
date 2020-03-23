@@ -15,9 +15,8 @@ import scipy.optimize as scp
 import numpy as np
 import scipy.misc as scm
 
-SIGNAL_DIRS = ["./Data/CentralData/","./Data/Pos2Data/","./Data/Pos3Data/",
-"./Data/Pos3P1mData/"]
-SIGNAL_LABELS = ["Position 0","Position 1", "Position 2", "Position 3"]
+SIGNAL_DIRS = ["./Data/BeamData/"]
+SIGNAL_LABELS = ['Beam']
 BKG_DIR = "./Data/BkgCentralData/"
 
 expoPFlat= lambda x,C1,tau,mu,B: C1*np.exp(-(x-mu)/tau) + B
@@ -160,12 +159,17 @@ def EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig):
 
 
 if __name__=='__main__':
+
+
+    mybranches = ['eventNumber','eventTimeTank','clusterTime','hitT','hitQ','hitPE','clusterChargeBalance','clusterPE','clusterMaxPE','clusterChargePointY']
+    mytrigbranches = ['eventNumber','eventTimeTank','eventTimeMRD','vetoHit']
+
+    myMRDbranches = ['eventNumber','eventTimeTank','eventTimeMRD','clusterTime','clusterHits','vetoHit',
+            'numClusterTracks','MRDTrackAngle','MRDPenetrationDepth','MRDEntryPointRadius','MRDEnergyLoss','MRDEnergyLossError','MRDTrackLength']
+
     blist = glob.glob(BKG_DIR+"*.ntuple.root")
-
-    livetime_estimate = abp.EstimateLivetime(blist)
-    print("BKG LIVETIME ESTIMATE IN SECONDS IS: " + str(livetime_estimate))
-
-    mybranches = ['eventNumber','eventTimeTank','clusterTime','SiPMhitQ','SiPMNum','SiPMhitT','hitT','hitQ','hitPE','SiPMhitAmplitude','clusterChargeBalance','clusterPE','clusterMaxPE','SiPM1NPulses','SiPM2NPulses','clusterChargePointY']
+    Bdf = GetDataFrame("phaseIITankClusterTree",mybranches,blist)
+    Bdf_trig = GetDataFrame("phaseIITriggerTree",mybranches,blist)
 
     PositionDict = {}
     for j,direc in enumerate(SIGNAL_DIRS):
@@ -176,11 +180,10 @@ if __name__=='__main__':
         PositionDict[SIGNAL_LABELS[j]] = []
         PositionDict[SIGNAL_LABELS[j]].append(GetDataFrame("phaseIITankClusterTree",mybranches,direcfiles))
         PositionDict[SIGNAL_LABELS[j]].append(GetDataFrame("phaseIITriggerTree",mybranches,direcfiles))
+        PositionDict[SIGNAL_LABELS[j]].append(GetDataFrame("phaseIIMRDClusterTree",myMRDbranches,direcfiles))
 
-    Bdf = GetDataFrame("phaseIITankClusterTree",mybranches,blist)
-    Bdf_trig = GetDataFrame("phaseIITriggerTree",mybranches,blist)
-
+    print("THE GOOD STUFF")
     #EstimateNeutronEfficiency(PositionDict["Position 0"][0],Bdf,PositionDict["Position 0"][1],Bdf_trig)
-    EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig)
+    #EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig)
 
 

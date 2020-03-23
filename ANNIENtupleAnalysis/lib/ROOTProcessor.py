@@ -60,12 +60,15 @@ class ROOTProcessor(object):
         f = uproot.open(rootfile)
         ftree = f.get(self.treename)
         all_data = ftree.keys()
+        seen_data = []
         for dattype in all_data:
                 if branches_to_get is not 'all':
                     if dattype.decode('utf-8') not in branches_to_get: 
                         continue
-                thistype_processed = ftree.get(dattype).array()
-                self._appendProcessedEntry(dattype,thistype_processed)
+                if dattype not in seen_data: #Hack to ignore duplicate ntuple entries
+                    seen_data.append(dattype)
+                    thistype_processed = ftree.get(dattype).array()
+                    self._appendProcessedEntry(dattype,thistype_processed)
             
 
     def _appendProcessedEntry(self, dattype, thistype_processed):
