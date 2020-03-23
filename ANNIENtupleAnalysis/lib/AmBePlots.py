@@ -14,7 +14,7 @@ sns.set_context('poster')
 sns.set(font_scale=2.5)
 sns.set_style("whitegrid")
 sns.axes_style("darkgrid")
-xkcd_colors = ['dark teal','purple','adobe']
+xkcd_colors = ['dark teal','purple','adobe','red']
 sns.set_palette(sns.xkcd_palette(xkcd_colors))
 
 def EstimateLivetime(filelist):
@@ -40,23 +40,25 @@ def EstimateLivetime(filelist):
     return total_time
 
 def MakeClusterMultiplicityPlot(df,df_trig):
-    allEvents = df_trig['eventNumber']
+    allEvents = df_trig['eventTimeTank'].values
     ClusterMultiplicities = []
     CurrentEventNum = None
     Evs_withCluster = []
     ClusterMultiplicity = 0
     for j in df.index.values:  #disgusting...
         if CurrentEventNum is None:
-            CurrentEventNum = df["eventNumber"][j]
-            Evs_withCluster.append(df["eventNumber"][j])
-        if CurrentEventNum != df["eventNumber"][j]:
-            Evs_withCluster.append(df["eventNumber"][j])
+            CurrentEventNum = df["eventTimeTank"][j]
+            Evs_withCluster.append(df["eventTimeTank"][j])
+        if CurrentEventNum != df["eventTimeTank"][j]:
             ClusterMultiplicities.append(ClusterMultiplicity)
             ClusterMultiplicity=0
-            CurrentEventNum = df["eventNumber"][j]
+            Evs_withCluster.append(df["eventTimeTank"][j])
+            CurrentEventNum = df["eventTimeTank"][j]
         ClusterMultiplicity +=1
     Evs_withCluster = np.array(Evs_withCluster)
+    print("NUM EVTS WITH CLUSTER: " + str(len(Evs_withCluster)))
     allEvents = np.array(allEvents)
+    print("NUM EVENTS IN TRIG CLEAN: " + str(len(allEvents)))
     zero_clusters = np.setdiff1d(allEvents,Evs_withCluster)
     zeros = np.zeros(len(zero_clusters))
     MultiplicityData = np.concatenate((ClusterMultiplicities,zeros))

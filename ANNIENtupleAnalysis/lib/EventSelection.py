@@ -20,41 +20,66 @@ def SingleSiPMPulsesDeltaT(df,TimeThreshold):
     for j in df.index.values:  #disgusting...
         TwoPulses = False
         if df["SiPM1NPulses"][j]!=1 or df["SiPM1NPulses"][j]!=1:
-            DirtyTriggers.append(df["eventNumber"][j])
+            DirtyTriggers.append(df["eventTimeTank"][j])
         else:
             if TwoPulses:
                 if TwoPulses and abs(df["SiPMhitT"][j][0] - df["SiPMhitT"][1]) > TimeThreshold:
-                    DirtyTriggers.append(df["eventNumber"][j])
+                    DirtyTriggers.append(df["eventTimeTank"][j])
     CleanIndices = []
     for j in df.index.values:  #disgusting...
-        if df["eventNumber"][j] not in DirtyTriggers:
+        if df["eventTimeTank"][j] not in DirtyTriggers:
             CleanIndices.append(j)
     CleanIndices = np.array(CleanIndices)
     newdf = df.loc[CleanIndices]
     newdf.reset_index(drop=True)
     return newdf
 
-def NoPromptClusters(df,clusterTimeCut):
+def NoPromptClusters_WholeFile(df_cluster,df_trig,clusterTimeCut):
+    '''
+    Return a filtered trigger DataFrame which has all triggers that either
+    have no cluster at all, or only have clusters in the time greater than
+    clusterTimeCut.
+    '''
+    #Get Tank Trigger times that have a prompt cluster in the first two microseconds
+    DirtyPromptEvents = []
+    for j in df_cluster.index.values:  #disgusting...
+        if df_cluster["clusterTime"][j] < clusterTimeCut:
+            DirtyPromptEvents.append(df_cluster["eventTimeTank"][j])
+    #Get indices for trigger entries that don't have an event time in DirtyPromptEvents
+    CleanIndices = []
+    for j in df_trig.index.values:  #disgusting...
+        if df_trig["eventTimeTank"][j] not in DirtyPromptEvents:
+            CleanIndices.append(j)
+    CleanIndices = np.array(CleanIndices)
+    return df_trig.loc[CleanIndices].reset_index(drop=True)
+
+def NoPromptClusters(df_cluster,clusterTimeCut):
     '''
     Return clusters from events that have no prompt cluster with a time earlier
     than the TimeCut variable.
     '''
     DirtyPromptEvents = []
-    print("LENGTH OF DF IS: " + str(len(df)))
-    for j in df.index.values:  #disgusting...
-        if df["clusterTime"][j] < clusterTimeCut:
-            DirtyPromptEvents.append(df["eventNumber"][j])
+    for j in df_cluster.index.values:  #disgusting...
+        if df_cluster["clusterTime"][j] < clusterTimeCut:
+            DirtyPromptEvents.append(df_cluster["eventTimeTank"][j])
     CleanIndices = []
-    for j in df.index.values:  #disgusting...
-        if df["eventNumber"][j] not in DirtyPromptEvents:
+    for j in df_cluster.index.values:  #disgusting...
+        if df_cluster["eventTimeTank"][j] not in DirtyPromptEvents:
             CleanIndices.append(j)
     CleanIndices = np.array(CleanIndices)
-    return df.loc[CleanIndices].reset_index(drop=True)
+    return df_cluster.loc[CleanIndices].reset_index(drop=True)
 
 def FilterByEventNumber(df,eventnums):
     ReturnIndices = []
     for j in df.index.values:  #disgusting...
-        if df["eventNumber"][j] in eventnums:
+        if df["eventTimeTank"][j] in eventnums:
+            ReturnIndices.append(j)
+    return df.loc[np.array(ReturnIndices)].reset_index(drop=True)
+
+def FilterByEventTime(df,eventnums):
+    ReturnIndices = []
+    for j in df.index.values:  #disgusting...
+        if df["eventTimeTank"][j] in eventnums:
             ReturnIndices.append(j)
     return df.loc[np.array(ReturnIndices)].reset_index(drop=True)
 
@@ -69,10 +94,10 @@ def ValidPromptClusterEvents(df,clusterTimeCut):
     DirtyPromptEvents = []
     for j in df.index.values:  #disgusting...
         if df["clusterTime"][j] < clusterTimeCut:
-            DirtyPromptEvents.append(df["eventNumber"][j])
+            DirtyPromptEvents.append(df["eventTimeTank"][j])
     CleanIndices = []
     for j in df.index.values:  #disgusting...
-        if df["eventNumber"][j] not in DirtyPromptEvents:
+        if df["eventTimeTank"][j] not in DirtyPromptEvents:
             CleanIndices.append(j)
     CleanIndices = np.array(CleanIndices)
     Cleans = np.intersect1d(OnePulses,CleanIndices)
