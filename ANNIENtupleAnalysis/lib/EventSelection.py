@@ -104,3 +104,72 @@ def ValidPromptClusterEvents(df,clusterTimeCut):
     df_CleanPrompt = df.loc[Cleans]
     return df_CleanPrompt.reset_index(drop=True)
 
+
+########## BEAM-RELATED EVENT SELECTION FUNCTIONS ###########
+
+def MaxPEClusters(df):
+    '''
+    Prune down the data frame to clusters that only have the largest photoelectron
+    value.
+    '''
+    CurrentEventNum = None
+    HighestPE_indices = []
+    HighestPE = 0
+    for j in df.index.values:  #disgusting...
+        if CurrentEventNum is None:
+            CurrentEventNum = df["eventTimeTank"][j]
+            HighestPE = df["clusterPE"][j]
+            HighestPE_index = j
+        if CurrentEventNum != df["eventTimeTank"][j]:
+            HighestPE_indices.append(HighestPE_index)
+            HighestPE = df["clusterPE"][j]
+            HighestPE_index = j
+            CurrentEventNum = df["eventTimeTank"][j]
+        else:
+            if df["clusterPE"][j] > HighestPE:
+                HighestPE_index = j
+    HighestPE_indices = np.array(HighestPE_indices)
+    return df.loc[HighestPE_indices].reset_index(drop=True)
+
+def MaxHitClusters(df):
+    '''
+    Prune down the data frame to clusters that only have the largest clusterHits 
+    value.
+    '''
+    CurrentEventNum = None
+    HighestNhit_indices = []
+    HighestNhit = 0
+    for j in df.index.values:  #disgusting...
+        if CurrentEventNum is None:
+            CurrentEventNum = df["eventTimeTank"][j]
+            HighestNhit = df["clusterHits"][j]
+            HighestNhit_index = j
+        if CurrentEventNum != df["eventTimeTank"][j]:
+            HighestNhit_indices.append(HighestNhit_index)
+            HighestNhit = df["clusterHits"][j]
+            HighestNhit_index = j
+            CurrentEventNum = df["eventTimeTank"][j]
+        else:
+            if df["clusterHits"][j] > HighestNhit:
+                HighestNhit_index = j
+    HighestNhit_indices = np.array(HighestNhit_indices)
+    return df.loc[HighestNhit_indices].reset_index(drop=True)
+
+def MatchingEventTimes(df1,df2):
+    '''
+    Take two dataframes and return an array of clusterTimes that 
+    come from clusters with matching eventTimeTanks.
+    '''
+    PMTIndices = []
+    MRDIndices = []
+    for j in df1.index.values:
+        eventTime = df1["eventTimeTank"][j]
+        Match = np.where(df2["eventTimeTank"].values == eventTime)[0]
+        if len(Match) > 0:
+            PMTIndices.append(j)
+            MRDIndices.append(Match[0])
+        if len(Match) > 1:
+            print("OH SHIT, WHY ARE THERE MULTIPLE CLUSTERS AT THIS TIME NOW???")
+            print("EVENT TIME TANK IS " + str(eventTime))
+    return np.array(PMTIndices), np.array(MRDIndices)
+

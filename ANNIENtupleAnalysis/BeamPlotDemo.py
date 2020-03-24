@@ -15,7 +15,7 @@ import scipy.optimize as scp
 import numpy as np
 import scipy.misc as scm
 
-SIGNAL_DIRS = ["./Data/BeamData/"]
+SIGNAL_DIRS = ["./Data/BeamData/smallBeam/"]
 SIGNAL_LABELS = ['Beam']
 BKG_DIR = "./Data/BkgCentralData/"
 
@@ -30,128 +30,60 @@ def GetDataFrame(mytreename,mybranches,filelist):
     df = pd.DataFrame(data)
     return df
 
-def EstimateNeutronEfficiency(Sdf, Bdf, Sdf_trig, Bdf_trig):
-
+def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
+    Sdf = PositionDict["Beam"][0]
+    Sdf_trig = PositionDict["Beam"][1]
+    Sdf_mrd = PositionDict["Beam"][2]
     #First, estimate the mean neutrons generated per acquisition due to bkgs
     Bdf_SinglePulses = es.SingleSiPMPulses(Bdf)
     Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf_SinglePulses['clusterTime']>20000)].reset_index(drop=True)
-    Bdf_trig_goodSiPM = Bdf_trig.loc[(Bdf_trig['SiPM1NPulses']==1) & (Bdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
-    BkgScaleFactor = (67000-2000)/(67000-20000)  #Scale mean neutrons per window up by this
-    MBData = abp.MakeClusterMultiplicityPlot(Bdf_latewindow,Bdf_trig_goodSiPM)
-    print("MBData:" + str(MBData))
-    Bbins,Bbin_edges = np.histogram(MBData,range=(0,6),bins=6)
-    print("BINS AND EDGES")
-    print(Bbins)
-    print(Bbin_edges)
-    Bbins_lefts = Bbin_edges[0:len(Bbin_edges)-1] #Combine clusters of 19 and 20 at end... negligible effect
-    Bbins_normed = Bbins/float(np.sum(Bbins))
-    Bbins_normed_unc = np.sqrt(Bbins)/float(np.sum(Bbins))
-    zero_bins = np.where(Bbins_normed_unc==0)[0]
-    Bbins_normed_unc[zero_bins] = 1/float(np.sum(Bbins))
-    print("BBins_normed: " + str(Bbins_normed))
-    init_params = [1]
-    popt, pcov = scp.curve_fit(mypoisson, Bbins_lefts,Bbins_normed,p0=init_params, maxfev=6000,sigma=Bbins_normed_unc)
-    print('BEST FIT MEAN: ' + str(popt[0]))
-    myy = mypoisson(Bbins_lefts,popt[0])
-    plt.errorbar(x=Bbins_lefts,y=Bbins_normed,yerr=Bbins_normed_unc,linestyle='None',marker='o',label='No source ($t>20 \, \mu s$)')
-    plt.plot(Bbins_lefts,myy,marker='None',linewidth=6,label=r'Best poiss. fit $\mu= %s \pm %s$'%(str(np.round(popt[0],2)),str(np.round(np.sqrt(pcov[0]),2))),color='black')
-    leg = plt.legend(loc=1,fontsize=24)
-    leg.set_frame_on(True)
-    leg.draw_frame(True)
-    plt.show()
     
-    #Get the normalized signal distribution
-    Sdf_SinglePulses = es.SingleSiPMPulses(Sdf)
-    Sdf_trig_SinglePulses = Sdf_trig.loc[(Sdf_trig['SiPM1NPulses']==1) & (Sdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
-    Sdf_CleanPrompt = es.NoPromptClusters(Sdf_SinglePulses,2000)
-    Sdf_trig_CleanPrompt = es.NoPromptClusters_WholeFile(Sdf_SinglePulses,Sdf_trig_SinglePulses,2000)
-    MSData = abp.MakeClusterMultiplicityPlot(Sdf_CleanPrompt,Sdf_trig_CleanPrompt)
-    Sbins,Sbin_edges = np.histogram(MSData,range=(0,6),bins=6)
-    print("BINS AND EDGES")
-    print(Sbins)
-    print(Sbin_edges)
-    Sbins_lefts = Sbin_edges[0:len(Bbin_edges)-1] #Combine clusters of 19 and 20 at end... negligible effect
-    Sbins_normed = Sbins/float(np.sum(Sbins))
-    Sbins_normed_unc = np.sqrt(Sbins)/float(np.sum(Sbins))
-    plt.errorbar(x=Sbins_lefts,y=Sbins_normed,yerr=Sbins_normed_unc,linestyle='None',marker='o',label='Source ($t>2 \, \mu s$)')
-    plt.errorbar(x=Bbins_lefts,y=Bbins_normed,yerr=Bbins_normed_unc,linestyle='None',marker='o',label='No source ($t>20 \, \mu s$)')
-    plt.plot(Bbins_lefts,myy,marker='None',linewidth=6,label=r'Best poiss. fit $\mu= %s \pm %s$'%(str(np.round(popt[0],2)),str(np.round(np.sqrt(pcov[0]),2))),color='black')
-    leg = plt.legend(loc=1,fontsize=24)
-    leg.set_frame_on(True)
-    leg.draw_frame(True)
+    #Let's list some plots we want to make here:
+    #  - Get delayed clusters that have eventTimeTanks matching the prompt/delayed
+    #    cluster times.  Apply
+    #  - clusterPE>10 and clusterChargeBalance<0.4 and plot the time distribution
+
+
+    Sdf_prompt = Sdf.loc[Sdf['clusterTime']<2000].reset_index(drop=True)
+    plt.hist(Sdf_prompt['clusterTime'],bins=100,range=(0,2000))
+    plt.title("Prompt window Tank cluster times")
+    plt.xlabel("Cluster time [ns]")
+    plt.show()
+    print("TOTAL PROMPT CLUSTERS: " + str(len(Sdf_prompt)))
+
+    Sdf_maxPE = es.MaxPEClusters(Sdf_prompt)
+    plt.hist(Sdf_maxPE['clusterTime'],bins=100,range=(0,2000))
+    plt.title("Prompt window Tank cluster times (Highest PE cluster in each event)")
+    plt.xlabel("Cluster time [ns]")
+    plt.show()
+    print("TOTAL MAXPE PROMPT CLUSTERS: " + str(len(Sdf_maxPE)))
+
+
+
+    Sdf_mrd_maxhit = es.MaxHitClusters(Sdf_mrd)
+
+    #Now, get the clusterTime pairs corresponding to matching triggers
+    TankIndices, MRDIndices = es.MatchingEventTimes(Sdf_maxPE,Sdf_mrd_maxhit)
+    TankTimes = Sdf_maxPE["clusterTime"].values[TankIndices]
+    MRDTimes = Sdf_mrd_maxhit["clusterTime"].values[MRDIndices]
+    plt.scatter(TankTimes,MRDTimes,marker='o',s=13)
+    plt.title("Tank and MRD cluster times in acquisitions \n (Highest PE and highest paddle hit clusters)")
+    plt.xlabel("Tank Cluster time [ns]")
+    plt.ylabel("MRD Cluster time [ns]")
     plt.show()
 
-    #Cool, now the fun: We build a likelihood profile.
-    PLBuilder = plb.ProfileLikelihoodBuilder()
-    PLBuilder.SetBkgMean(BkgScaleFactor*popt[0])
-    PLBuilder.SetBkgMeanUnc(np.sqrt(pcov[0][0]))
-    NeutronProbProfile = np.arange(0,1,0.005)
-    ChiSquare = PLBuilder.BuildLikelihoodProfile(NeutronProbProfile,Sbins_normed,Sbins_normed_unc,700000,Bbins_normed)
-    ChiSquare_normed = ChiSquare/np.min(ChiSquare)
-    plt.plot(NeutronProbProfile,ChiSquare_normed,marker='None',linewidth=4)
-    plt.title("Weighted chi-square test parameter as a function of neutron capture efficiency")
-    plt.xlabel("Neutron capture observation efficiency")
-    plt.ylabel("$\chi^{2}$/$\chi^{2}_{min}$")
+    plt.hist(MRDTimes - TankTimes, bins = 30)
+    plt.title("Difference in MRD and Tank cluster times in acquisitions \n (Highest PE and highest paddle hit clusters)")
+    plt.xlabel("MRD cluster time - Tank cluster time")
     plt.show()
 
-def EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig):
-
-    #First, estimate the mean neutrons generated per acquisition due to bkgs
-    Bdf_SinglePulses = es.SingleSiPMPulses(Bdf)
-    Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf_SinglePulses['clusterTime']>20000)].reset_index(drop=True)
-    Bdf_trig_goodSiPM = Bdf_trig.loc[(Bdf_trig['SiPM1NPulses']==1) & (Bdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
-    BkgScaleFactor = (67000-2000)/(67000-20000)  #Scale mean neutrons per window up by this
-    MBData = abp.MakeClusterMultiplicityPlot(Bdf_latewindow,Bdf_trig_goodSiPM)
-    print("MBData:" + str(MBData))
-    Bbins,Bbin_edges = np.histogram(MBData,range=(0,6),bins=6)
-    print("BINS AND EDGES")
-    print(Bbins)
-    print(Bbin_edges)
-    Bbins_lefts = Bbin_edges[0:len(Bbin_edges)-1] #Combine clusters of 19 and 20 at end... negligible effect
-    Bbins_normed = Bbins/float(np.sum(Bbins))
-    Bbins_normed_unc = np.sqrt(Bbins)/float(np.sum(Bbins))
-    zero_bins = np.where(Bbins_normed_unc==0)[0]
-    Bbins_normed_unc[zero_bins] = 1/float(np.sum(Bbins))
-    print("BBins_normed: " + str(Bbins_normed))
-    init_params = [1]
-    popt, pcov = scp.curve_fit(mypoisson, Bbins_lefts,Bbins_normed,p0=init_params, maxfev=6000,sigma=Bbins_normed_unc)
-    print('BEST FIT MEAN: ' + str(popt[0]))
-    myy = mypoisson(Bbins_lefts,popt[0])
-    plt.errorbar(x=Bbins_lefts,y=Bbins_normed,yerr=Bbins_normed_unc,linestyle='None',marker='o',label='No source ($t>20 \, \mu s$)')
-    plt.plot(Bbins_lefts,myy,marker='None',linewidth=6,label=r'Best poiss. fit $\mu= %s \pm %s$'%(str(np.round(popt[0],2)),str(np.round(np.sqrt(pcov[0]),2))),color='black')
-    leg = plt.legend(loc=1,fontsize=24)
-    leg.set_frame_on(True)
-    leg.draw_frame(True)
-    plt.show()
-    
-    #Get the normalized signal distribution
-    for Position in PositionDict:
-        Sdf = PositionDict[Position][0]
-        Sdf_trig = PositionDict[Position][1]
-        Sdf_SinglePulses = es.SingleSiPMPulses(Sdf)
-        Sdf_trig_SinglePulses = Sdf_trig.loc[(Sdf_trig['SiPM1NPulses']==1) & (Sdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
-        Sdf_CleanPrompt = es.NoPromptClusters(Sdf_SinglePulses,2000)
-        Sdf_trig_CleanPrompt = es.NoPromptClusters_WholeFile(Sdf_SinglePulses,Sdf_trig_SinglePulses,2000)
-        MSData = abp.MakeClusterMultiplicityPlot(Sdf_CleanPrompt,Sdf_trig_CleanPrompt)
-        Sbins,Bbin_edges = np.histogram(MSData,range=(0,6),bins=6)
-        print("BINS AND EDGES")
-        Sbins_lefts = Bbin_edges[0:len(Bbin_edges)-1] #Combine clusters of 19 and 20 at end... negligible effect
-        Sbins_normed = Sbins/float(np.sum(Sbins))
-        Sbins_normed_unc = np.sqrt(Sbins)/float(np.sum(Sbins))
-        #zero_bins = np.where(Sbins_normed_unc==0)[0]
-        #Sbins_normed_unc[zero_bins] = 1/float(np.sum(Sbins))
-        #Cool, now the fun: We build a likelihood profile.
-        PLBuilder = plb.ProfileLikelihoodBuilder()
-        PLBuilder.SetBkgMean(BkgScaleFactor*popt[0])
-        PLBuilder.SetBkgMeanUnc(np.sqrt(pcov[0][0]))
-        NeutronProbProfile = np.arange(0.2,0.8,0.005)
-        #TODO: Instead of Shooting the background uncertainties, shoot values from the distribution
-        ChiSquare = PLBuilder.BuildLikelihoodProfile(NeutronProbProfile,Sbins_normed,Sbins_normed_unc,600000,Bbins_normed)
-        ChiSquare_normed = ChiSquare/np.min(ChiSquare)
-        plt.plot(NeutronProbProfile,ChiSquare_normed,marker='None',linewidth=5,label=Position,alpha=0.75)
-    plt.title("Profile likelihood of of neutron capture efficiency \n at different source deployment positions")
-    plt.xlabel("Neutron capture efficiency")
-    plt.ylabel("$\chi^{2}$/$\chi^{2}_{min}$")
+    clusterIndices_match = np.where(((MRDTimes - TankTimes)<800) & ((MRDTimes - TankTimes) > 200))[0]
+    print(clusterIndices_match)
+    MRDIndices_match = MRDIndices[clusterIndices_match]
+    plt.hist(Sdf_mrd_maxhit['clusterTime'].values,bins=80,range=(0,4000),label="All MRD clusters")
+    plt.hist(Sdf_mrd_maxhit['clusterTime'].values[MRDIndices_match],bins=80,range=(0,4000),label="Tank Cluster Match")
+    plt.title("Prompt window MRD cluster times \n (Highest nhit cluster in event)")
+    plt.xlabel("Cluster time [ns]")
     leg = plt.legend(loc=1,fontsize=24)
     leg.set_frame_on(True)
     leg.draw_frame(True)
@@ -160,7 +92,8 @@ def EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig):
 
 if __name__=='__main__':
 
-
+    mybkgbranches = ['eventNumber','eventTimeTank','clusterTime','hitT','hitQ','hitPE','clusterChargeBalance','clusterPE','clusterMaxPE','clusterChargePointY','SiPM1NPulses','SiPM2NPulses']
+    mybkgtrigbranches = ['eventNumber','eventTimeTank','eventTimeMRD','vetoHit','SiPM1NPulses','SiPM2NPulses']
     mybranches = ['eventNumber','eventTimeTank','clusterTime','hitT','hitQ','hitPE','clusterChargeBalance','clusterPE','clusterMaxPE','clusterChargePointY']
     mytrigbranches = ['eventNumber','eventTimeTank','eventTimeMRD','vetoHit']
 
@@ -168,7 +101,7 @@ if __name__=='__main__':
             'numClusterTracks','MRDTrackAngle','MRDPenetrationDepth','MRDEntryPointRadius','MRDEnergyLoss','MRDEnergyLossError','MRDTrackLength']
 
     blist = glob.glob(BKG_DIR+"*.ntuple.root")
-    Bdf = GetDataFrame("phaseIITankClusterTree",mybranches,blist)
+    Bdf = GetDataFrame("phaseIITankClusterTree",mybkgbranches,blist)
     Bdf_trig = GetDataFrame("phaseIITriggerTree",mybranches,blist)
 
     PositionDict = {}
@@ -183,7 +116,7 @@ if __name__=='__main__':
         PositionDict[SIGNAL_LABELS[j]].append(GetDataFrame("phaseIIMRDClusterTree",myMRDbranches,direcfiles))
 
     print("THE GOOD STUFF")
-    #EstimateNeutronEfficiency(PositionDict["Position 0"][0],Bdf,PositionDict["Position 0"][1],Bdf_trig)
+    BeamPlotDemo(PositionDict,Bdf,Bdf_trig)
     #EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig)
 
 
