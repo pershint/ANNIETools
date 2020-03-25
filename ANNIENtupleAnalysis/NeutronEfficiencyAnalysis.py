@@ -35,7 +35,8 @@ def EstimateNeutronEfficiency(Sdf, Bdf, Sdf_trig, Bdf_trig):
 
     #First, estimate the mean neutrons generated per acquisition due to bkgs
     Bdf_SinglePulses = es.SingleSiPMPulses(Bdf)
-    Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf_SinglePulses['clusterTime']>20000)].reset_index(drop=True)
+    Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf_SinglePulses['clusterTime']>12000)].reset_index(drop=True)
+    Bdf_latewindow = Bdf_latewindow.loc[(Bdf_latewindow['clusterChargeBalance']<0.4)].reset_index(drop=True)
     Bdf_trig_goodSiPM = Bdf_trig.loc[(Bdf_trig['SiPM1NPulses']==1) & (Bdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
     BkgScaleFactor = (67000-2000)/(67000-20000)  #Scale mean neutrons per window up by this
     MBData = abp.MakeClusterMultiplicityPlot(Bdf_latewindow,Bdf_trig_goodSiPM)
@@ -65,6 +66,7 @@ def EstimateNeutronEfficiency(Sdf, Bdf, Sdf_trig, Bdf_trig):
     Sdf_SinglePulses = es.SingleSiPMPulses(Sdf)
     Sdf_trig_SinglePulses = Sdf_trig.loc[(Sdf_trig['SiPM1NPulses']==1) & (Sdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
     Sdf_CleanPrompt = es.NoPromptClusters(Sdf_SinglePulses,2000)
+    Sdf_CleanPrompt = Sdf_CleanPrompt.loc[Sdf_CleanPrompt["clusterChargeBalance"]<0.4].reset_index(drop=True)
     Sdf_trig_CleanPrompt = es.NoPromptClusters_WholeFile(Sdf_SinglePulses,Sdf_trig_SinglePulses,2000)
     MSData = abp.MakeClusterMultiplicityPlot(Sdf_CleanPrompt,Sdf_trig_CleanPrompt)
     Sbins,Sbin_edges = np.histogram(MSData,range=(0,6),bins=6)
@@ -74,8 +76,8 @@ def EstimateNeutronEfficiency(Sdf, Bdf, Sdf_trig, Bdf_trig):
     Sbins_lefts = Sbin_edges[0:len(Bbin_edges)-1] #Combine clusters of 19 and 20 at end... negligible effect
     Sbins_normed = Sbins/float(np.sum(Sbins))
     Sbins_normed_unc = np.sqrt(Sbins)/float(np.sum(Sbins))
-    plt.errorbar(x=Sbins_lefts,y=Sbins_normed,yerr=Sbins_normed_unc,linestyle='None',marker='o',label='Source ($t>2 \, \mu s$)')
-    plt.errorbar(x=Bbins_lefts,y=Bbins_normed,yerr=Bbins_normed_unc,linestyle='None',marker='o',label='No source ($t>20 \, \mu s$)')
+    plt.errorbar(x=Sbins_lefts,y=Sbins_normed,yerr=Sbins_normed_unc,linestyle='None',marker='o',label='Source ($t>2 \, \mu s$)',markersize=12)
+    plt.errorbar(x=Bbins_lefts,y=Bbins_normed,yerr=Bbins_normed_unc,linestyle='None',marker='o',label='No source ($t>20 \, \mu s$)',markersize=12)
     plt.plot(Bbins_lefts,myy,marker='None',linewidth=6,label=r'Best poiss. fit $\mu= %s \pm %s$'%(str(np.round(popt[0],2)),str(np.round(np.sqrt(pcov[0]),2))),color='black')
     leg = plt.legend(loc=1,fontsize=24)
     leg.set_frame_on(True)
@@ -87,8 +89,19 @@ def EstimateNeutronEfficiency(Sdf, Bdf, Sdf_trig, Bdf_trig):
     PLBuilder.SetBkgMean(BkgScaleFactor*popt[0])
     PLBuilder.SetBkgMeanUnc(np.sqrt(pcov[0][0]))
     NeutronProbProfile = np.arange(0,1,0.005)
-    ChiSquare = PLBuilder.BuildLikelihoodProfile(NeutronProbProfile,Sbins_normed,Sbins_normed_unc,700000,Bbins_normed)
+    ChiSquare,lowestChiSqProfile = PLBuilder.BuildLikelihoodProfile(NeutronProbProfile,Sbins_normed,Sbins_normed_unc,700000,Bbins_normed)
+    print("MINIMUM CHI SQUARE: " + str(np.min(ChiSquare)))
     ChiSquare_normed = ChiSquare/np.min(ChiSquare)
+
+    plt.errorbar(x=Sbins_lefts,y=Sbins_normed,yerr=Sbins_normed_unc,linestyle='None',marker='o',label='Source ($t>2 \, \mu s$)',markersize=12)
+    plt.plot(Sbins_lefts, lowestChiSqProfile,linestyle='None',marker='o',label='Best fit model profile',markersize=12)
+    leg = plt.legend(loc=1,fontsize=24)
+    leg.set_frame_on(True)
+    leg.draw_frame(True)
+    plt.title("Best fit MC profile relative to central source data")
+    plt.xlabel("Delayed cluster multiplicity")
+    plt.show()
+
     plt.plot(NeutronProbProfile,ChiSquare_normed,marker='None',linewidth=4)
     plt.title("Weighted chi-square test parameter as a function of neutron capture efficiency")
     plt.xlabel("Neutron capture observation efficiency")
@@ -99,7 +112,8 @@ def EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig):
 
     #First, estimate the mean neutrons generated per acquisition due to bkgs
     Bdf_SinglePulses = es.SingleSiPMPulses(Bdf)
-    Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf_SinglePulses['clusterTime']>20000)].reset_index(drop=True)
+    Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf_SinglePulses['clusterTime']>12000)].reset_index(drop=True)
+    Bdf_latewindow = Bdf_latewindow.loc[(Bdf_latewindow['clusterChargeBalance']<0.4)].reset_index(drop=True)
     Bdf_trig_goodSiPM = Bdf_trig.loc[(Bdf_trig['SiPM1NPulses']==1) & (Bdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
     BkgScaleFactor = (67000-2000)/(67000-20000)  #Scale mean neutrons per window up by this
     MBData = abp.MakeClusterMultiplicityPlot(Bdf_latewindow,Bdf_trig_goodSiPM)
@@ -132,8 +146,11 @@ def EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig):
         Sdf_SinglePulses = es.SingleSiPMPulses(Sdf)
         Sdf_trig_SinglePulses = Sdf_trig.loc[(Sdf_trig['SiPM1NPulses']==1) & (Sdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
         Sdf_CleanPrompt = es.NoPromptClusters(Sdf_SinglePulses,2000)
+        Sdf_CleanPrompt = Sdf_CleanPrompt.loc[Sdf_CleanPrompt["clusterChargeBalance"]<0.4].reset_index(drop=True)
+        #Sdf_CleanPrompt_latewindow = Sdf_CleanPrompt.loc[(Sdf_CleanPrompt['clusterTime']>12000)].reset_index(drop=True)
         Sdf_trig_CleanPrompt = es.NoPromptClusters_WholeFile(Sdf_SinglePulses,Sdf_trig_SinglePulses,2000)
         MSData = abp.MakeClusterMultiplicityPlot(Sdf_CleanPrompt,Sdf_trig_CleanPrompt)
+        #MSData = abp.MakeClusterMultiplicityPlot(Sdf_CleanPrompt_latewindow,Sdf_trig_CleanPrompt) #Get multiplicity of late window
         Sbins,Bbin_edges = np.histogram(MSData,range=(0,6),bins=6)
         print("BINS AND EDGES")
         Sbins_lefts = Bbin_edges[0:len(Bbin_edges)-1] #Combine clusters of 19 and 20 at end... negligible effect
@@ -146,11 +163,11 @@ def EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig):
         PLBuilder.SetBkgMean(BkgScaleFactor*popt[0])
         PLBuilder.SetBkgMeanUnc(np.sqrt(pcov[0][0]))
         NeutronProbProfile = np.arange(0.2,0.8,0.005)
-        #TODO: Instead of Shooting the background uncertainties, shoot values from the distribution
-        ChiSquare = PLBuilder.BuildLikelihoodProfile(NeutronProbProfile,Sbins_normed,Sbins_normed_unc,600000,Bbins_normed)
+        ChiSquare, lowestChiSqProfile = PLBuilder.BuildLikelihoodProfile(NeutronProbProfile,Sbins_normed,Sbins_normed_unc,600000,Bbins_normed)
+        print("MINIMUM CHI SQUARE: " + str(np.min(ChiSquare)))
         ChiSquare_normed = ChiSquare/np.min(ChiSquare)
         plt.plot(NeutronProbProfile,ChiSquare_normed,marker='None',linewidth=5,label=Position,alpha=0.75)
-    plt.title("Profile likelihood of of neutron capture efficiency \n at different source deployment positions")
+    plt.title("Profile likelihood of of neutron capture efficiency \n in range [2,67] $\mu s$")
     plt.xlabel("Neutron capture efficiency")
     plt.ylabel("$\chi^{2}$/$\chi^{2}_{min}$")
     leg = plt.legend(loc=1,fontsize=24)
@@ -162,7 +179,7 @@ def EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig):
 if __name__=='__main__':
     blist = glob.glob(BKG_DIR+"*.ntuple.root")
 
-    livetime_estimate = abp.EstimateLivetime(blist)
+    livetime_estimate = es.EstimateLivetime(blist)
     print("BKG LIVETIME ESTIMATE IN SECONDS IS: " + str(livetime_estimate))
 
     mybranches = ['eventNumber','eventTimeTank','clusterTime','SiPMhitQ','SiPMNum','SiPMhitT','hitT','hitQ','hitPE','SiPMhitAmplitude','clusterChargeBalance','clusterPE','clusterMaxPE','SiPM1NPulses','SiPM2NPulses','clusterChargePointY']
@@ -171,7 +188,7 @@ if __name__=='__main__':
     for j,direc in enumerate(SIGNAL_DIRS):
         direcfiles = glob.glob(direc+"*.ntuple.root")
 
-        livetime_estimate = abp.EstimateLivetime(direcfiles)
+        livetime_estimate = es.EstimateLivetime(direcfiles)
         print("SIGNAL LIVETIME ESTIMATE IN SECONDS IS: " + str(livetime_estimate))
         PositionDict[SIGNAL_LABELS[j]] = []
         PositionDict[SIGNAL_LABELS[j]].append(GetDataFrame("phaseIITankClusterTree",mybranches,direcfiles))
@@ -180,7 +197,7 @@ if __name__=='__main__':
     Bdf = GetDataFrame("phaseIITankClusterTree",mybranches,blist)
     Bdf_trig = GetDataFrame("phaseIITriggerTree",mybranches,blist)
 
-    #EstimateNeutronEfficiency(PositionDict["Position 0"][0],Bdf,PositionDict["Position 0"][1],Bdf_trig)
+    EstimateNeutronEfficiency(PositionDict["Position 0"][0],Bdf,PositionDict["Position 0"][1],Bdf_trig)
     EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig)
 
 

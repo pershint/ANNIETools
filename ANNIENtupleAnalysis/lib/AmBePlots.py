@@ -17,28 +17,6 @@ sns.axes_style("darkgrid")
 xkcd_colors = ['dark teal','purple','adobe','red']
 sns.set_palette(sns.xkcd_palette(xkcd_colors))
 
-def EstimateLivetime(filelist):
-    '''
-    Estimate live time using the smallest and 
-    largest time stamps in each separate file.  One or two 
-    events are being set to an unphysically small or large number though,
-    have to investigate.
-    '''
-    total_time = 0
-    mybranches = ['eventTimeTank']
-    for f1 in filelist:
-        f1Processor = rp.ROOTProcessor(treename="phaseIITriggerTree")
-        f1Processor.addROOTFile(f1,branches_to_get=mybranches)
-        f1data = f1Processor.getProcessedData()
-        f1data_pd = pd.DataFrame(f1data)
-        early_time = np.min(f1data_pd.loc[(f1data_pd["eventTimeTank"]>1E6)].values)/1E9
-        late_time = np.max(f1data_pd.loc[(f1data_pd["eventTimeTank"]<2.0E18)].values)/1E9
-        print("EARLY_TIME: " + str(early_time))
-        print("LATE_TIME: " + str(late_time))
-        print("LATE - EARLY TIME: " + str(late_time - early_time))
-        total_time+=(late_time-early_time)
-    return total_time
-
 def MakeClusterMultiplicityPlot(df,df_trig):
     allEvents = df_trig['eventTimeTank'].values
     ClusterMultiplicities = []

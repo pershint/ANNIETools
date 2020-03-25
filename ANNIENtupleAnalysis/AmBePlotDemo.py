@@ -8,36 +8,42 @@ import uproot
 import lib.ROOTProcessor as rp
 import lib.EventSelection as es
 import lib.AmBePlots as abp
+import lib.FileReader as fr
 import pandas as pd
 import matplotlib.pyplot as plt
 import scipy.optimize as scp
 import numpy as np
 
+MCDELTAT = "./Data/MCProfiles/DeltaTHist.csv"
+MCPE = "./Data/MCProfiles/PEHist.csv"
 SIGNAL_DIR = "./Data/Pos3P1mData/"
-BKG_DIR = "./Data/BkgCentralData/"
+#BKG_DIR = "./Data/BkgCentralData/"
+BKG_DIR = "./Data/V3/"
 
 expoPFlat= lambda x,C1,tau,mu,B: C1*np.exp(-(x-mu)/tau) + B
 
-def EventSelectionLosses(df):
-    print("TOTAL NUMBER OF EVENT TIME TANKS SET: " + str(len(set(df['eventTimeTank']))))
-    print("TOTAL NUMBER OF EVENT TIME TANKS, LIST: " + str(len(df['eventTimeTank'])))
-    print("TOTAL NUMBER OF ENTRIES: " + str(len(df)))
+def EventSelectionLosses(df,df_trig):
+    print("TOTAL NUMBER OF EVENT TIME TANKS SET: " + str(len(set(df_trig['eventTimeTank']))))
+    print("TOTAL NUMBER OF EVENT TIME TANKS, LIST: " + str(len(df_trig['eventTimeTank'])))
+    print("TOTAL NUMBER OF ENTRIES: " + str(len(df_trig)))
     
-    df_cleanSiPM = es.SingleSiPMPulses(df)
+    df_cleanSiPM = es.SingleSiPMPulses(df_trig)
     print("TOTAL NUMBER OF EVENTS W/ ONE PULSE IN EACH SIPM: " + str(len(set(df_cleanSiPM['eventTimeTank']))))
+    df_SinglePulses = es.SingleSiPMPulses(df) #Clusters with a single SiPM pulse
 
-    df_cleanSiPMDT = es.SingleSiPMPulsesDeltaT(df,200) 
+    df_cleanSiPMDT = es.SingleSiPMPulsesDeltaT(df_trig,200) 
     print("TOTAL NUMBER OF EVENTS W/ ONE PULSE IN EACH SIPM, PEAKS WITHIN 200 NS: " + str(len(set(df_cleanSiPMDT['eventTimeTank']))))
-
-    #df_cleanPrompt = es.NoPromptClusters(df_cleanSiPM,2000)
-    #print("TOTAL NUMBER OF EVENTS W/ ONE PULSE IN EACH SIPM AND NO PROMPT CLUSTER: " + str(len(set(df_cleanPrompt['eventTimeTank']))))
+    
+    df_trig_cleanSiPM = df_trig.loc[(df_trig['SiPM1NPulses']==1) & (df_trig['SiPM2NPulses']==1)].reset_index(drop=True)
+    df_trig_cleanPrompt = es.NoPromptClusters_WholeFile(df_SinglePulses,df_trig_cleanSiPM,2000)
+    print("TOTAL NUMBER OF EVENTS W/ ONE PULSE IN EACH SIPM AND NO PROMPT CLUSTER: " + str(len(set(df_trig_cleanPrompt['eventTimeTank']))))
 
 def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
     print("EVENT SELECTION LOSSES FOR CENTRAL SOURCE RUN")
-    EventSelectionLosses(Sdf_trig)
+    EventSelectionLosses(Sdf,Sdf_trig)
 
     print("EVENT SELECTION LOSSES FOR BKG CENTRAL SOURCE RUN")
-    EventSelectionLosses(Bdf)
+    EventSelectionLosses(Bdf,Bdf_trig)
 
     Sdf_SinglePulses = es.SingleSiPMPulses(Sdf)
     Bdf_SinglePulses = es.SingleSiPMPulses(Bdf)
@@ -114,6 +120,64 @@ def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
     leg.draw_frame(True)
     plt.show()
 
+    #Find the baseline with the bin resolution used in Vincent's plot
+    plt.hist(Sdf_CleanPrompt['clusterTime'],163,range=(15000,67000),alpha=0.8)
+    plt.show()
+    plt.hist(Sdf_CleanPrompt['clusterTime'],163,range=(15000,67000),alpha=0.8)
+    dhist,dbin_edges = np.histogram(Sdf_CleanPrompt['clusterTime'],163,range=(15000,67000))
+    dbin_lefts = dbin_edges[0:len(dbin_edges)-1]
+    dbin_width = dbin_lefts[1] - dbin_lefts[0]
+    dbin_centers = dbin_lefts + dbin_width/2.
+    init_params = [20, 30000,15000,5]
+    popt, pcov = scp.curve_fit(expoPFlat, dbin_centers,dhist,p0=init_params, maxfev=6000)
+    print("WE ARE HERE")
+    print(popt)
+    print(pcov)
+    myy = expoPFlat(dbin_centers,popt[0],popt[1],popt[2],popt[3])
+    myy_line = np.ones(len(dbin_centers))*popt[3]
+    flat_bkg = popt[3]
+    tau_mean = int(popt[1]/1000)
+    tau_unc = int(np.sqrt(pcov[1][1])/1000)
+    plt.plot(dbin_centers,myy,marker='None',linewidth=6,label=r'Best total fit $\tau = %i\pm%i \mu s$'%(tau_mean,tau_unc),color='black')
+    plt.plot(dbin_centers,myy_line,marker='None',linewidth=6,label=r'Flat bkg. fit',color='gray')
+    plt.xlabel("Cluster time (ns)")
+    plt.title("Time distribution of delayed hit clusters (MCBins) \n (One pulse in each SiPM, no prompt cluster)")
+    leg = plt.legend(loc=1,fontsize=24)
+    leg.set_frame_on(True)
+    leg.draw_frame(True)
+    plt.show()
+    
+    #Get MC
+    mchist,mcbin_lefts = fr.ReadHistFile(MCDELTAT)
+    mcrange = np.where(mcbin_lefts<70100)[0]
+    mchist = mchist[mcrange]
+    mchist_unc = np.sqrt(mchist) 
+    mcbin_lefts = mcbin_lefts[mcrange]
+    mchist_normed = mchist/np.sum(mchist)
+    mchist_normed_unc = mchist_unc/np.sum(mchist)
+
+    #Plot data over MC range, subtract baseline
+    dhist,dbin_edges = np.histogram(Sdf_CleanPrompt['clusterTime'],220,range=(0,70080))
+    dbin_lefts = dbin_edges[0:len(dbin_edges)-1]
+    dhist_nobkg = dhist-popt[3]
+    neg_bins = np.where(dhist_nobkg<0)[0]
+    dhist_nobkg[neg_bins] = 0
+    dhist_nobkg_unc = np.sqrt(dhist_nobkg) #TODO: could propagate uncertainty on flat fit too
+    dhist_nobkg_normed = dhist_nobkg/np.sum(dhist_nobkg)
+    dhist_nobkg_normed_unc = dhist_nobkg_unc/np.sum(dhist_nobkg)
+
+    plt.errorbar(dbin_lefts,dhist_nobkg_normed,yerr=dhist_nobkg_normed_unc,
+            linestyle='None',marker='o',label='Bkg. subtracted data')
+    plt.errorbar(mcbin_lefts,mchist_normed,yerr=mchist_normed_unc,
+            marker='o',linestyle='None',label='RATPAC MC')
+    leg = plt.legend(loc=1,fontsize=24)
+    leg.set_frame_on(True)
+    leg.draw_frame(True)
+    plt.title("Comparison of delayed cluster in central data/MC \n (MC: 2 MeV neutrons fired at center")
+    plt.xlabel("Neutron cluster time (ns)")
+    plt.show()
+
+
     #CleanEventNumbers = Sdf_CleanPrompt["eventNumber"]
     #Return DF with triggers that have no prompt and one of each SiPM pulse
     Sdf_trig_goodSiPM = Sdf_trig.loc[(Sdf_trig['SiPM1NPulses']==1) & (Sdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
@@ -129,9 +193,11 @@ def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
     leg.draw_frame(True)
     plt.show()
 
-    plt.hist(Bdf_SinglePulses['clusterTime'],100,label='No source', color='purple',alpha=0.7)
+    Bdf_CBCut = Bdf_SinglePulses.loc[Bdf_SinglePulses['clusterChargeBalance']<0.4].reset_index(drop=True)
+    plt.hist(Bdf_CBCut['clusterTime'],100,label='No source', color='purple',alpha=0.7)
+    #plt.hist(Bdf_SinglePulses['clusterTime'],100,label='No source', color='purple',alpha=0.7)
     plt.xlabel("Cluster time (ns)")
-    plt.axvline(x=20000,color='black',linewidth=6)
+    plt.axvline(x=12000,color='black',linewidth=6)
     plt.axvline(x=65000,color='black',linewidth=6)
     plt.title("Region to characterize flat background distribution \n (No source data, one pulse in each SiPM)")
     leg = plt.legend(loc=1,fontsize=24)
@@ -139,8 +205,8 @@ def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
     leg.draw_frame(True)
     plt.show()
 
-    plt.hist(MSData,bins=20, range=(0,20), label="Source",alpha=0.7)
-    Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf_SinglePulses['clusterTime']>20000)].reset_index(drop=True)
+    #plt.hist(MSData,bins=20, range=(0,20), label="Source",alpha=0.7)
+    Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf_SinglePulses['clusterTime']>12000)].reset_index(drop=True)
     Bdf_trig_goodSiPM = Bdf_trig.loc[(Bdf_trig['SiPM1NPulses']==1) & (Bdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
     #Bdf_trig_bkgclean = es.FilterByEventNumber(Bdf_trig,CleanBkgNumbers)
     #Get cluster multiplicity of late window in events passing prompt criteria
@@ -165,6 +231,56 @@ def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
     leg.set_frame_on(True)
     leg.draw_frame(True)
     plt.show()
+
+    #Get MC
+    mchist,mcbin_lefts = fr.ReadHistFile(MCPE)
+    mchist_normed = mchist/np.sum(mchist)
+    mchist_unc = np.sqrt(mchist)
+    mchist_normed_unc = mchist_unc/np.sum(mchist)
+
+    #Plot data over MC range, subtract baseline
+    dhist,dbin_edges = np.histogram(Sdf_CleanPrompt['clusterPE'],170,range=(0,170))
+    dbin_lefts = dbin_edges[0:len(dbin_edges)-1]
+    dhist_unc = np.sqrt(dhist) #TODO: could propagate uncertainty on flat fit too
+    dhist_normed = dhist/np.sum(dhist)
+    dhist_normed_unc = dhist_unc/np.sum(dhist)
+
+    plt.errorbar(dbin_lefts,dhist_normed,yerr=dhist_normed_unc,
+            linestyle='None',marker='o',label='Bkg. subtracted data')
+    plt.errorbar(mcbin_lefts,mchist_normed,yerr=mchist_normed_unc,
+            marker='o',linestyle='None',label='RATPAC MC')
+    leg = plt.legend(loc=1,fontsize=24)
+    leg.set_frame_on(True)
+    leg.draw_frame(True)
+    plt.title("Comparison of delayed cluster in central data/MC \n (MC: 2 MeV neutrons fired at center")
+    plt.xlabel("Delayed cluster PE")
+    plt.show()
+
+    #Same as above, but plotting past 25 PE
+    mc_past25PE = np.where(mcbin_lefts>=25)[0]
+    mcbin_lefts = mcbin_lefts[mc_past25PE]
+    mchist = mchist[mc_past25PE]
+    mchist_normed = mchist/np.sum(mchist)
+    mchist_unc = np.sqrt(mchist)
+    mchist_normed_unc = mchist_unc/np.sum(mchist)
+
+    dhist,dbin_edges = np.histogram(Sdf_CleanPrompt['clusterPE'],145,range=(25,170))
+    dbin_lefts = dbin_edges[0:len(dbin_edges)-1]
+    dhist_unc = np.sqrt(dhist) #TODO: could propagate uncertainty on flat fit too
+    dhist_normed = dhist/np.sum(dhist)
+    dhist_normed_unc = dhist_unc/np.sum(dhist)
+    plt.errorbar(dbin_lefts,dhist_normed,yerr=dhist_normed_unc,
+            linestyle='None',marker='o',label='Bkg. subtracted data')
+    plt.errorbar(mcbin_lefts,mchist_normed,yerr=mchist_normed_unc,
+            marker='o',linestyle='None',label='RATPAC MC')
+    leg = plt.legend(loc=1,fontsize=24)
+    leg.set_frame_on(True)
+    leg.draw_frame(True)
+    plt.title("Comparison of delayed cluster in central data/MC \n (MC: 2 MeV neutrons fired at center")
+    plt.xlabel("Delayed cluster PE")
+    plt.show()
+
+
 
     #Plotting the PE distribution
     Bdf_latewindow_CBClean = Bdf_latewindow.loc[Bdf_latewindow['clusterChargeBalance']<0.4]
@@ -191,7 +307,7 @@ def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
             'xlabel': 'Total PE', 'ylabel': 'Charge balance parameter'}
     ranges = {'xbins': 50, 'ybins':50, 'xrange':[0,150],'yrange':[0,1]}
     #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
-    Bdf_latewindow = Bdf.loc[Bdf['clusterTime']>20000]
+    Bdf_latewindow = Bdf.loc[Bdf['clusterTime']>12000]
     abp.Make2DHist(Bdf_latewindow,'clusterPE','clusterChargeBalance',labels,ranges)
     abp.ShowPlot()
 
@@ -223,7 +339,7 @@ def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
             'xlabel': 'Total PE', 'ylabel': 'Max PE'}
     ranges = {'xbins': 40, 'ybins':40, 'xrange':[0,60],'yrange':[0,15]}
     #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
-    Bdf_latewindow = Bdf.loc[Bdf['clusterTime']>20000]
+    Bdf_latewindow = Bdf.loc[Bdf['clusterTime']>12000]
     abp.Make2DHist(Bdf_latewindow,'clusterPE','clusterMaxPE',labels,ranges)
     abp.ShowPlot()
 
@@ -256,9 +372,9 @@ if __name__=='__main__':
     slist = glob.glob(SIGNAL_DIR+"*.ntuple.root")
     blist = glob.glob(BKG_DIR+"*.ntuple.root")
 
-    livetime_estimate = abp.EstimateLivetime(slist)
+    livetime_estimate = es.EstimateLivetime(slist)
     print("SIGNAL LIVETIME ESTIMATE IN SECONDS IS: " + str(livetime_estimate))
-    livetime_estimate = abp.EstimateLivetime(blist)
+    livetime_estimate = es.EstimateLivetime(blist)
     print("BKG LIVETIME ESTIMATE IN SECONDS IS: " + str(livetime_estimate))
 
     mybranches = ['eventNumber','eventTimeTank','clusterTime','SiPMhitQ','SiPMNum','SiPMhitT','hitT','hitQ','hitPE','SiPMhitAmplitude','clusterChargeBalance','clusterPE','clusterMaxPE','SiPM1NPulses','SiPM2NPulses','clusterChargePointY']

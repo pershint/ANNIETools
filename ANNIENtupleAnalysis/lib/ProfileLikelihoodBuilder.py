@@ -27,11 +27,17 @@ class ProfileLikelihoodBuilder(object):
             print("You have to set your background distribution's mean neutron count per window!")
             return None
         ChiSquares = []
+        LowestChiSq = 1E12
+        LowestChiSqProfile = None
         for var in ProfileVariable:
             MCProfile = self.BuildMCProfileBkgDist(var,SignalDistribution,BackgroundDistribution,randShoots)
             ChiSquare = self.CalcChiSquare(MCProfile,SignalDistribution,SignalDistribution_unc)
+            print("CHISQUARE IS: " + str(ChiSquare))
+            if ChiSquare<LowestChiSq:
+                LowestChiSqProfile = MCProfile
+                LowestChiSq = ChiSquare
             ChiSquares.append(ChiSquare)
-        return ChiSquares
+        return ChiSquares, LowestChiSqProfile
 
     def BuildMCProfile(self,variable,SignalDistribution,randShoots):
         '''

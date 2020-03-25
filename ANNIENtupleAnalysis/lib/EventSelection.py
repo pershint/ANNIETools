@@ -1,5 +1,31 @@
 import numpy as np
 import copy
+import lib.ROOTProcessor as rp
+import pandas as pd
+
+def EstimateLivetime(filelist):
+    '''
+    Estimate live time using the smallest and 
+    largest time stamps in each separate file.  One or two 
+    events are being set to an unphysically small or large number though,
+    have to investigate.
+    '''
+    total_time = 0
+    mybranches = ['eventTimeTank']
+    for f1 in filelist:
+        f1Processor = rp.ROOTProcessor(treename="phaseIITriggerTree")
+        f1Processor.addROOTFile(f1,branches_to_get=mybranches)
+        f1data = f1Processor.getProcessedData()
+        f1data_pd = pd.DataFrame(f1data)
+        early_time = np.min(f1data_pd.loc[(f1data_pd["eventTimeTank"]>1E6)].values)/1E9
+        late_time = np.max(f1data_pd.loc[(f1data_pd["eventTimeTank"]<2.0E18)].values)/1E9
+        print("EARLY_TIME: " + str(early_time))
+        print("LATE_TIME: " + str(late_time))
+        print("LATE - EARLY TIME: " + str(late_time - early_time))
+        total_time+=(late_time-early_time)
+    return total_time
+
+
 
 #Some methods for returning a dataframe cleaned based on event selection
 
@@ -173,3 +199,29 @@ def MatchingEventTimes(df1,df2):
             print("EVENT TIME TANK IS " + str(eventTime))
     return np.array(PMTIndices), np.array(MRDIndices)
 
+def SingleTrackSelection(df1,trackRadius,trackAngle,trackDepth):
+    '''
+    Return a dataFrame with MRD clusters that have one track, and have an entry point
+    within the trackRadius, angle less than track angle (radians), and a track 
+    depth than the trackDepth (cm).
+    '''
+    df1_singleTracks = df1.loc[df1["numClusterTracks"]==1].reset_index(drop=True)
+    valid_singleTrackInds = []
+    for j in df1_singleTracks.index.values:
+        radius = df1_singleTracks["MRDEntryPointRadius"][j][0]
+        angle = df1_singleTracks["MRDTrackAngle"][j][0]
+        depth = df1_singleTracks["MRDPenetrationDepth"][j][0]
+        if radius < trackRadius and angle < trackAngle and depth > trackDepth:
+            valid_singleTrackInds.append(j)
+    return np.array(valid_singleTrackInds)
+
+def SingleTrackEnergies(df1):
+    '''
+    Return a dataFrame with MRD clusters that have one track, and have an entry point
+    within the trackRadius, angle less than track angle (radians), and a track 
+    depth than the trackDepth (cm).
+    '''
+    Energies = []
+    for j in df1.index.values:
+        Energies.append(df1['MRDEnergyLoss'][j][0])
+    return np.array(Energies)
