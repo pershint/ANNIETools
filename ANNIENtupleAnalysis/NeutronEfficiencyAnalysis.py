@@ -15,10 +15,10 @@ import scipy.optimize as scp
 import numpy as np
 import scipy.misc as scm
 
-SIGNAL_DIRS = ["./Data/CentralData/","./Data/Pos2Data/","./Data/Pos3Data/",
-"./Data/Pos3P1mData/"]
+SIGNAL_DIRS = ["./Data/V3/CentralData/","./Data/V3/Pos2Data/","./Data/V3/Pos3Data/",
+"./Data/V3/Pos3P1mData/"]
 SIGNAL_LABELS = ["Position 0","Position 1", "Position 2", "Position 3"]
-BKG_DIR = "./Data/BkgCentralData/"
+BKG_DIR = "./Data/V3/BkgCentralData/"
 
 expoPFlat= lambda x,C1,tau,mu,B: C1*np.exp(-(x-mu)/tau) + B
 mypoisson = lambda x,mu: (mu**x)*np.exp(-mu)/scm.factorial(x)
@@ -38,7 +38,6 @@ def EstimateNeutronEfficiency(Sdf, Bdf, Sdf_trig, Bdf_trig):
     Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf_SinglePulses['clusterTime']>12000)].reset_index(drop=True)
     Bdf_latewindow = Bdf_latewindow.loc[(Bdf_latewindow['clusterChargeBalance']<0.4)].reset_index(drop=True)
     Bdf_trig_goodSiPM = Bdf_trig.loc[(Bdf_trig['SiPM1NPulses']==1) & (Bdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
-    BkgScaleFactor = (67000-2000)/(67000-20000)  #Scale mean neutrons per window up by this
     MBData = abp.MakeClusterMultiplicityPlot(Bdf_latewindow,Bdf_trig_goodSiPM)
     print("MBData:" + str(MBData))
     Bbins,Bbin_edges = np.histogram(MBData,range=(0,6),bins=6)
@@ -86,6 +85,7 @@ def EstimateNeutronEfficiency(Sdf, Bdf, Sdf_trig, Bdf_trig):
 
     #Cool, now the fun: We build a likelihood profile.
     PLBuilder = plb.ProfileLikelihoodBuilder()
+    BkgScaleFactor = (67000-2000)/(67000-20000)  #Scale mean neutrons per window up by this
     PLBuilder.SetBkgMean(BkgScaleFactor*popt[0])
     PLBuilder.SetBkgMeanUnc(np.sqrt(pcov[0][0]))
     NeutronProbProfile = np.arange(0,1,0.005)
@@ -115,7 +115,6 @@ def EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig):
     Bdf_latewindow = Bdf_SinglePulses.loc[(Bdf_SinglePulses['clusterTime']>12000)].reset_index(drop=True)
     Bdf_latewindow = Bdf_latewindow.loc[(Bdf_latewindow['clusterChargeBalance']<0.4)].reset_index(drop=True)
     Bdf_trig_goodSiPM = Bdf_trig.loc[(Bdf_trig['SiPM1NPulses']==1) & (Bdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
-    BkgScaleFactor = (67000-2000)/(67000-20000)  #Scale mean neutrons per window up by this
     MBData = abp.MakeClusterMultiplicityPlot(Bdf_latewindow,Bdf_trig_goodSiPM)
     print("MBData:" + str(MBData))
     Bbins,Bbin_edges = np.histogram(MBData,range=(0,6),bins=6)
@@ -160,6 +159,7 @@ def EstimateNeutronEfficiencyAllPosns(PositionDict,Bdf,Bdf_trig):
         #Sbins_normed_unc[zero_bins] = 1/float(np.sum(Sbins))
         #Cool, now the fun: We build a likelihood profile.
         PLBuilder = plb.ProfileLikelihoodBuilder()
+        BkgScaleFactor = (67000-2000)/(67000-20000)  #Scale mean neutrons per window up by this
         PLBuilder.SetBkgMean(BkgScaleFactor*popt[0])
         PLBuilder.SetBkgMeanUnc(np.sqrt(pcov[0][0]))
         NeutronProbProfile = np.arange(0.2,0.8,0.005)
@@ -182,7 +182,7 @@ if __name__=='__main__':
     livetime_estimate = es.EstimateLivetime(blist)
     print("BKG LIVETIME ESTIMATE IN SECONDS IS: " + str(livetime_estimate))
 
-    mybranches = ['eventNumber','eventTimeTank','clusterTime','SiPMhitQ','SiPMNum','SiPMhitT','hitT','hitQ','hitPE','SiPMhitAmplitude','clusterChargeBalance','clusterPE','clusterMaxPE','SiPM1NPulses','SiPM2NPulses','clusterChargePointY']
+    mybranches = ['eventNumber','eventTimeTank','clusterTime','SiPMhitQ','SiPMNum','SiPMhitT','hitT','hitQ','hitPE','SiPMhitAmplitude','clusterChargeBalance','clusterPE','clusterMaxPE','SiPM1NPulses','SiPM2NPulses','clusterChargePointY','clusterChargePointZ']
 
     PositionDict = {}
     for j,direc in enumerate(SIGNAL_DIRS):

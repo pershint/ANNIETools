@@ -16,9 +16,9 @@ import numpy as np
 
 MCDELTAT = "./Data/MCProfiles/DeltaTHist.csv"
 MCPE = "./Data/MCProfiles/PEHist.csv"
-SIGNAL_DIR = "./Data/Pos3P1mData/"
+SIGNAL_DIR = "./Data/V3/CentralData/"
 #BKG_DIR = "./Data/BkgCentralData/"
-BKG_DIR = "./Data/V3/"
+BKG_DIR = "./Data/V3/BkgCentralData/"
 
 expoPFlat= lambda x,C1,tau,mu,B: C1*np.exp(-(x-mu)/tau) + B
 
@@ -94,35 +94,12 @@ def WMPlots(Sdf,Bdf,Sdf_trig,Bdf_trig):
     abp.MakeKDEPlot(Sdf_window,'clusterPE','clusterChargeBalance',labels,ranges)
     abp.ShowPlot()
 
-    labels = {'title': 'Comparison of total PE to max PE (Source)', 
-            'xlabel': 'Total PE', 'ylabel': 'Max PE'}
-    ranges = {'xbins': 40, 'ybins':40, 'xrange':[0,60],'yrange':[0,15]}
-    #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
-    abp.Make2DHist(Sdf_CleanPrompt,'clusterPE','clusterMaxPE',labels,ranges)
-    abp.ShowPlot()
-
-    labels = {'title': 'Comparison of total PE to max PE (No source, >12 $\mu$s)', 
-            'xlabel': 'Total PE', 'ylabel': 'Max PE'}
-    ranges = {'xbins': 40, 'ybins':40, 'xrange':[0,60],'yrange':[0,15]}
-    #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
-
 
     #Apply late window and charge balance cuts for data cleaning
     Bdf_latewindow = Bdf.loc[Bdf['clusterTime']>12000]
-    Bdf_latewindow_CBCut = Bdf_latewindow.loc[Bdf_latewindow['clusterChargeBalance']>0.4]
     Sdf_CleanPromptCB = Sdf_CleanPrompt.loc[Sdf_CleanPrompt['clusterChargeBalance']<0.4].reset_index(drop=True)
 
-    abp.Make2DHist(Bdf_latewindow,'clusterPE','clusterMaxPE',labels,ranges)
-    abp.ShowPlot()
     
-    Bdf_latewindow_CBCut = Bdf_latewindow.loc[Bdf_latewindow['clusterChargeBalance']<0.4]
-    labels = {'title': 'Comparison of total PE to max PE \n (No source, >12 $\mu$s, CB<0.4)', 
-            'xlabel': 'Total PE', 'ylabel': 'Max PE'}
-    ranges = {'xbins': 40, 'ybins':40, 'xrange':[0,60],'yrange':[0,15]}
-    #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
-    abp.Make2DHist(Bdf_latewindow_CBCut,'clusterPE','clusterMaxPE',labels,ranges)
-    abp.ShowPlot()
-
     labels = {'title': 'Comparison of total PE to Charge Point Y-component (Source) \n (No CB cut)', 
             'xlabel': 'Total PE', 'ylabel': 'Charge Point Y'}
     ranges = {'xbins': 30, 'ybins':30, 'xrange':[0,60],'yrange':[-1,1]}
@@ -145,12 +122,12 @@ def WMPlots(Sdf,Bdf,Sdf_trig,Bdf_trig):
     abp.Make2DHist(Bdf_latewindow,'clusterPE','clusterChargePointY',labels,ranges)
     abp.ShowPlot()
 
-
+    Bdf_latewindow_hiCBCut = Bdf_latewindow.loc[Bdf_latewindow['clusterChargeBalance']>0.4]
     labels = {'title': 'Comparison of total PE to Charge Point Y-component (No source, >12 $\mu$s, Charge Balance > 0.4)', 
             'xlabel': 'Total PE', 'ylabel': 'Charge Point Y'}
     ranges = {'xbins': 30, 'ybins':30, 'xrange':[0,60],'yrange':[-1,1]}
     #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
-    abp.Make2DHist(Bdf_latewindow_CBCut,'clusterPE','clusterChargePointY',labels,ranges)
+    abp.Make2DHist(Bdf_latewindow_hiCBCut,'clusterPE','clusterChargePointY',labels,ranges)
     abp.ShowPlot()
 
     Bdf_latewindow_CBCut = Bdf_latewindow.loc[Bdf_latewindow['clusterChargeBalance']<0.4]

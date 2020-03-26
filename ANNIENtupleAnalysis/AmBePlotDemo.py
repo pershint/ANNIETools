@@ -16,9 +16,9 @@ import numpy as np
 
 MCDELTAT = "./Data/MCProfiles/DeltaTHist.csv"
 MCPE = "./Data/MCProfiles/PEHist.csv"
-SIGNAL_DIR = "./Data/Pos3P1mData/"
+SIGNAL_DIR = "./Data/V3/Pos3Data/"
 #BKG_DIR = "./Data/BkgCentralData/"
-BKG_DIR = "./Data/V3/"
+BKG_DIR = "./Data/V3/BkgCentralData/"
 
 expoPFlat= lambda x,C1,tau,mu,B: C1*np.exp(-(x-mu)/tau) + B
 
@@ -159,7 +159,8 @@ def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
     #Plot data over MC range, subtract baseline
     dhist,dbin_edges = np.histogram(Sdf_CleanPrompt['clusterTime'],220,range=(0,70080))
     dbin_lefts = dbin_edges[0:len(dbin_edges)-1]
-    dhist_nobkg = dhist-popt[3]
+    #dhist_nobkg = dhist-popt[3]
+    dhist_nobkg = dhist
     neg_bins = np.where(dhist_nobkg<0)[0]
     dhist_nobkg[neg_bins] = 0
     dhist_nobkg_unc = np.sqrt(dhist_nobkg) #TODO: could propagate uncertainty on flat fit too
@@ -342,12 +343,20 @@ def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
     Bdf_latewindow = Bdf.loc[Bdf['clusterTime']>12000]
     abp.Make2DHist(Bdf_latewindow,'clusterPE','clusterMaxPE',labels,ranges)
     abp.ShowPlot()
-
-    labels = {'title': 'Comparison of total PE to Charge Point Y-component (Sourcej)', 
+    
+    Sdf_CleanPrompt_CBCut = Sdf_CleanPrompt.loc[Sdf_CleanPrompt['clusterChargeBalance']<0.4].reset_index(drop=True)
+    labels = {'title': 'Comparison of total PE to Charge Point Y-component \n (Source, Charge Balance<0.4)', 
             'xlabel': 'Total PE', 'ylabel': 'Charge Point Y'}
     ranges = {'xbins': 30, 'ybins':30, 'xrange':[0,60],'yrange':[-1,1]}
     #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
-    abp.Make2DHist(Sdf_CleanPrompt,'clusterPE','clusterChargePointY',labels,ranges)
+    abp.Make2DHist(Sdf_CleanPrompt_CBCut,'clusterPE','clusterChargePointY',labels,ranges)
+    abp.ShowPlot()
+
+    labels = {'title': 'Comparison of total PE to Charge Point Z-component \n (Source, Charge Balance<0.4)', 
+            'xlabel': 'Total PE', 'ylabel': 'Charge Point Z'}
+    ranges = {'xbins': 30, 'ybins':30, 'xrange':[0,60],'yrange':[-1,1]}
+    #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
+    abp.Make2DHist(Sdf_CleanPrompt_CBCut,'clusterPE','clusterChargePointZ',labels,ranges)
     abp.ShowPlot()
 
     labels = {'title': 'Comparison of total PE to Charge Point Y-component (No source, >20 $\mu$s)', 
@@ -359,7 +368,7 @@ def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
 
 
     Bdf_latewindow_CBCut = Bdf_latewindow.loc[Bdf_latewindow['clusterChargeBalance']>0.4]
-    labels = {'title': 'Comparison of total PE to Charge Point Y-component (No source, >20 $\mu$s, Charge Balance > 0.4)', 
+    labels = {'title': 'Comparison of total PE to Charge Point Y-component \n (No source, >20 $\mu$s, Charge Balance > 0.4)', 
             'xlabel': 'Total PE', 'ylabel': 'Charge Point Y'}
     ranges = {'xbins': 30, 'ybins':30, 'xrange':[0,60],'yrange':[-1,1]}
     #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
@@ -377,7 +386,7 @@ if __name__=='__main__':
     livetime_estimate = es.EstimateLivetime(blist)
     print("BKG LIVETIME ESTIMATE IN SECONDS IS: " + str(livetime_estimate))
 
-    mybranches = ['eventNumber','eventTimeTank','clusterTime','SiPMhitQ','SiPMNum','SiPMhitT','hitT','hitQ','hitPE','SiPMhitAmplitude','clusterChargeBalance','clusterPE','clusterMaxPE','SiPM1NPulses','SiPM2NPulses','clusterChargePointY']
+    mybranches = ['eventNumber','eventTimeTank','clusterTime','SiPMhitQ','SiPMNum','SiPMhitT','hitT','hitQ','hitPE','SiPMhitAmplitude','clusterChargeBalance','clusterPE','clusterMaxPE','SiPM1NPulses','SiPM2NPulses','clusterChargePointY','clusterChargePointZ']
     SProcessor = rp.ROOTProcessor(treename="phaseIITankClusterTree")
     for f1 in slist:
         SProcessor.addROOTFile(f1,branches_to_get=mybranches)
