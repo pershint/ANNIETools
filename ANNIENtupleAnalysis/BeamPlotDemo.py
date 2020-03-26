@@ -57,7 +57,7 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
     Sdf_maxPE = es.MaxPEClusters(Sdf_prompt)
     Sdf_mrd_maxhit = es.MaxHitClusters(Sdf_mrd)
 
-    #Now, get the clusterTime pairs that are in the same triggers 
+    #Now, get the index number for clusterTime pairs in the same triggers 
     TankIndices, MRDIndices = es.MatchingEventTimes(Sdf_maxPE,Sdf_mrd_maxhit)
     TankTimes = Sdf_maxPE["clusterTime"].values[TankIndices]
     MRDTimes = Sdf_mrd_maxhit["clusterTime"].values[MRDIndices]
@@ -73,7 +73,7 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
     plt.show()
 
     #Get indices for MRD/Tank cluster times within the coincident window
-    clusterIndices_match = np.where(((MRDTimes - TankTimes)<800) & ((MRDTimes - TankTimes) > 200))[0]
+    clusterIndices_match = np.where(((MRDTimes - TankTimes)<900) & ((MRDTimes - TankTimes) > 600))[0]
     MRDIndices_match = MRDIndices[clusterIndices_match]
     TankIndices_match = TankIndices[clusterIndices_match]
 
@@ -101,7 +101,7 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
     Sdf_ValidDelayedClusters = Sdf_ClustersInMaxPE.loc[Sdf_ClustersInMaxPE['clusterTime']>12000].reset_index(drop=True)
 
     plt.hist(Sdf.loc[Sdf["clusterTime"]>12000,"clusterTime"],bins=20,range=(12000,65000),label='No PMT/MRD pairing in prompt',alpha=0.8)
-    plt.hist(Sdf_ValidDelayedClusters["clusterTime"], bins=20, range=(12000,67000),label='PMT/MRD pair required in prompt',alpha=0.8)
+    plt.hist(Sdf_ValidDelayedClusters["clusterTime"], bins=20, range=(12000,65000),label='PMT/MRD pair required in prompt',alpha=0.8)
     plt.title("Delayed cluster times \n [Matching tank and MRD cluster in prompt window]")
     plt.xlabel("Cluster time [ns]")
     leg = plt.legend(loc=1,fontsize=24)
@@ -117,7 +117,6 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
     leg.set_frame_on(True)
     leg.draw_frame(True)
     plt.show()
-
 
 
     Sdf_MatchingPrompts = Sdf_maxPE.loc[TankIndices_match].reset_index(drop=True)
