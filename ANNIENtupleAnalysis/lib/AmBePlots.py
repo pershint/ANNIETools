@@ -14,7 +14,10 @@ sns.set_context('poster')
 sns.set(font_scale=2.5)
 sns.set_style("whitegrid")
 sns.axes_style("darkgrid")
-xkcd_colors = ['dark teal','purple','adobe','red']
+xkcd_colors = ['teal','dark teal','light purple','purple','adobe','red']
+#xkcd_colors = ['light purple','purple','teal','dark teal','adobe','red']
+#xkcd_colors = ['dark teal','dark orange']
+#xkcd_colors = ['light blue','blue','pink','red','adobe','red']
 sns.set_palette(sns.xkcd_palette(xkcd_colors))
 
 def MakeClusterMultiplicityPlot(df,df_trig):
@@ -53,7 +56,8 @@ def MakeSiPMVariableDistribution(df, variable, sipm_num, labels, ranges,SingleSi
     variableval = np.hstack(df[variable])
     numbers = np.hstack(df.SiPMNum)
     variableval = variableval[np.where(numbers==sipm_num)[0]]
-    plt.hist(variableval,bins=ranges['bins'],range=ranges['range'],label=labels['llabel'],alpha=0.8)
+    plt.hist(variableval,bins=ranges['bins'],range=ranges['range'],alpha=0.5,histtype='stepfilled',linewidth=6)
+    plt.hist(variableval,bins=ranges['bins'],range=ranges['range'],label=labels['llabel'],alpha=0.75,histtype='step',linewidth=6)
     plt.xlabel(labels["xlabel"])
     appendage = ""
     if SingleSiPMPulses:

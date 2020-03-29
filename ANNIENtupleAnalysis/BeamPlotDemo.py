@@ -8,6 +8,7 @@ import uproot
 import lib.ROOTProcessor as rp
 import lib.EventSelection as es
 import lib.ProfileLikelihoodBuilder as plb
+import lib.AmBePlots as abp
 import lib.BeamPlots as bp
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -53,6 +54,36 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
     plt.show()
     print("TOTAL PROMPT CLUSTERS: " + str(len(Sdf_prompt)))
 
+    Sdf_hiPEprompt = Sdf_prompt.loc[Sdf_prompt['clusterPE']>1000].reset_index(drop=True)
+    labels = {'title': 'Total PE vs. Charge Point Z-component for prompt beam clusters', 
+            'xlabel': 'Total PE', 'ylabel': 'Charge Point Z'}
+    ranges = {'xbins': 100, 'ybins':40, 'xrange':[1000,5000],'yrange':[-1,1]}
+    #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
+    abp.Make2DHist(Sdf_hiPEprompt,'clusterPE','clusterChargePointZ',labels,ranges)
+    abp.ShowPlot()
+
+    Sdf_hiPEprompt = Sdf_prompt.loc[Sdf_prompt['clusterPE']>1000].reset_index(drop=True)
+    labels = {'title': 'Total PE vs. Charge Point X-component for prompt beam clusters', 
+            'xlabel': 'Total PE', 'ylabel': 'Charge Point X'}
+    ranges = {'xbins': 100, 'ybins':40, 'xrange':[1000,5000],'yrange':[-1,1]}
+    #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
+    abp.Make2DHist(Sdf_hiPEprompt,'clusterPE','clusterChargePointX',labels,ranges)
+    abp.ShowPlot()
+
+    Sdf_hiPEprompt = Sdf_prompt.loc[Sdf_prompt['clusterPE']>1000].reset_index(drop=True)
+    labels = {'title': 'Total PE vs. Charge Point Y-component for prompt beam clusters', 
+            'xlabel': 'Total PE', 'ylabel': 'Charge Point Y'}
+    ranges = {'xbins': 100, 'ybins':40, 'xrange':[1000,5000],'yrange':[-1,1]}
+    #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
+    abp.Make2DHist(Sdf_hiPEprompt,'clusterPE','clusterChargePointY',labels,ranges)
+    abp.ShowPlot()
+
+
+    plt.hist(Sdf_mrd['clusterTime'].values,bins=80,range=(0,4000),label="All MRD clusters")
+    plt.title("Prompt window MRD cluster times")
+    plt.xlabel("Cluster time [ns]")
+    plt.show()
+
     #Get largest cluster in each acquisition in prompt window
     Sdf_maxPE = es.MaxPEClusters(Sdf_prompt)
     Sdf_mrd_maxhit = es.MaxHitClusters(Sdf_mrd)
@@ -67,18 +98,22 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
     plt.ylabel("MRD Cluster time [ns]")
     plt.show()
 
-    plt.hist(MRDTimes - TankTimes, bins = 30)
+    plt.hist(MRDTimes - TankTimes, bins = 40)
+    plt.axvline(x=600,color='black',linewidth=6)
+    plt.axvline(x=800,color='black',linewidth=6)
     plt.title("Difference in MRD and Tank cluster times in acquisitions \n (Highest PE and highest paddle hit clusters)")
     plt.xlabel("MRD cluster time - Tank cluster time")
     plt.show()
 
     #Get indices for MRD/Tank cluster times within the coincident window
-    clusterIndices_match = np.where(((MRDTimes - TankTimes)<900) & ((MRDTimes - TankTimes) > 600))[0]
+    clusterIndices_match = np.where(((MRDTimes - TankTimes)<800) & ((MRDTimes - TankTimes) > 600))[0]
     MRDIndices_match = MRDIndices[clusterIndices_match]
     TankIndices_match = TankIndices[clusterIndices_match]
-
-    plt.hist(Sdf_mrd_maxhit['clusterTime'].values,bins=80,range=(0,4000),label="All MRD clusters")
-    plt.hist(Sdf_mrd_maxhit['clusterTime'].values[MRDIndices_match],bins=80,range=(0,4000),label="Tank Cluster Match")
+    
+    plt.hist(Sdf_mrd['clusterTime'].values,bins=80,range=(0,4000),label="All MRD clusters")
+    plt.hist(Sdf_mrd_maxhit['clusterTime'].values,bins=80,range=(0,4000),label="MRD clusters with most hits")
+    plt.hist(Sdf_mrd_maxhit['clusterTime'].values[MRDIndices],bins=80,range=(0,4000),label="+ Tank Cluster Match")
+    plt.hist(Sdf_mrd_maxhit['clusterTime'].values[MRDIndices_match],bins=80,range=(0,4000),label="+ in time window")
     plt.title("Prompt window MRD cluster times \n (Highest nhit cluster in event)")
     plt.xlabel("Cluster time [ns]")
     leg = plt.legend(loc=1,fontsize=24)
@@ -86,8 +121,10 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
     leg.draw_frame(True)
     plt.show()
 
-    plt.hist(Sdf_maxPE['clusterTime'].values,bins=80,range=(0,2000),label="All Tank clusters")
-    plt.hist(Sdf_maxPE['clusterTime'].values[TankIndices_match],bins=80,range=(0,2000),label="MRD Cluster Match")
+    plt.hist(Sdf_prompt['clusterTime'].values,bins=80,range=(0,2000),label="All Tank clusters")
+    plt.hist(Sdf_maxPE['clusterTime'].values,bins=80,range=(0,2000),label="Tank clusters with highest PE")
+    plt.hist(Sdf_maxPE['clusterTime'].values[TankIndices],bins=80,range=(0,2000),label="+ MRD Cluster Match")
+    plt.hist(Sdf_maxPE['clusterTime'].values[TankIndices_match],bins=80,range=(0,2000),label="+ in time window")
     plt.title("Prompt window Tank cluster times \n (Highest PE cluster in event)")
     plt.xlabel("Cluster time [ns]")
     leg = plt.legend(loc=1,fontsize=24)
@@ -98,11 +135,15 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
     #Now, Get all clusters past 12 us with the Event Times from TankIndices
     TankEventTimes_match = Sdf_maxPE["eventTimeTank"].values[TankIndices_match]
     Sdf_ClustersInMaxPE = es.FilterByEventTime(Sdf,TankEventTimes_match) #All clusters in events with a PMT/MRD match
+    print("ALL CLUSTER COUNT IN EVENTS WITH PMT/MRD ACTIVITY: " + str(len(Sdf_ClustersInMaxPE)))
+
+    print("CLUSTER COUNT IN EVENTS BEFORE 2 US: " + str(len(Sdf_ClustersInMaxPE.loc[Sdf_ClustersInMaxPE["clusterTime"]<2000].values)))
     Sdf_ValidDelayedClusters = Sdf_ClustersInMaxPE.loc[Sdf_ClustersInMaxPE['clusterTime']>12000].reset_index(drop=True)
+    print("CLUSTER COUNT IN EVENTS WITH PMT/MRD ACTIVITY PAST 12 US: " + str(len(Sdf_ValidDelayedClusters)))
 
     plt.hist(Sdf.loc[Sdf["clusterTime"]>12000,"clusterTime"],bins=20,range=(12000,65000),label='No PMT/MRD pairing in prompt',alpha=0.8)
     plt.hist(Sdf_ValidDelayedClusters["clusterTime"], bins=20, range=(12000,65000),label='PMT/MRD pair required in prompt',alpha=0.8)
-    plt.title("Delayed cluster times \n [Matching tank and MRD cluster in prompt window]")
+    plt.title("Delayed cluster times in beam runs")
     plt.xlabel("Cluster time [ns]")
     leg = plt.legend(loc=1,fontsize=24)
     leg.set_frame_on(True)
@@ -110,59 +151,60 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
     plt.show()
 
     #Let's try to make the energy calibration plot
-    plt.hist(Sdf_maxPE["clusterPE"], bins=40, range=(0,5000))
-    plt.title("Prompt cluster PE \n (Highest PE cluster in prompt window)")
-    plt.xlabel("Cluster PE")
-    leg = plt.legend(loc=1,fontsize=24)
-    leg.set_frame_on(True)
-    leg.draw_frame(True)
-    plt.show()
+    #plt.hist(Sdf_maxPE["clusterPE"], bins=40, range=(0,5000))
+    #plt.title("Prompt cluster PE \n (Highest PE cluster in prompt window)")
+    #plt.xlabel("Cluster PE")
+    #leg = plt.legend(loc=1,fontsize=24)
+    #leg.set_frame_on(True)
+    #leg.draw_frame(True)
+    #plt.show()
 
 
     Sdf_MatchingPrompts = Sdf_maxPE.loc[TankIndices_match].reset_index(drop=True)
     Sdf_MatchingPromptsMRD = Sdf_mrd_maxhit.loc[MRDIndices_match].reset_index(drop=True)
-    print("LEN OF TANK MATCHES: " + str(len(Sdf_MatchingPrompts)))
-    print("LEN OF MRD MATCHES: " + str(len(Sdf_MatchingPromptsMRD)))
+    #print("LEN OF TANK MATCHES: " + str(len(Sdf_MatchingPrompts)))
+    #print("LEN OF MRD MATCHES: " + str(len(Sdf_MatchingPromptsMRD)))
     HasVetoHit = np.where(Sdf_MatchingPromptsMRD["vetoHit"].values==1)[0]
     OneTrack = np.where(Sdf_MatchingPromptsMRD["numClusterTracks"].values==1)[0]
     ThroughGoingCandidates = np.intersect1d(HasVetoHit,OneTrack)
     Sdf_ThroughGoingCandidates = Sdf_MatchingPrompts.loc[ThroughGoingCandidates].reset_index(drop=True)
-    plt.hist(Sdf_ThroughGoingCandidates["clusterPE"], bins=40, range=(0,5000))
-    plt.title("Prompt cluster PE \n (Matching MRD cluster + one track + veto hit)")
-    plt.xlabel("Cluster PE")
-    leg = plt.legend(loc=1,fontsize=24)
-    leg.set_frame_on(True)
-    leg.draw_frame(True)
-    plt.show()
+    #plt.hist(Sdf_ThroughGoingCandidates["clusterPE"], bins=40, range=(0,5000))
+    #plt.title("Prompt cluster PE \n (Matching MRD cluster + one track + veto hit)")
+    #plt.xlabel("Cluster PE")
+    #leg = plt.legend(loc=1,fontsize=24)
+    #leg.set_frame_on(True)
+    #leg.draw_frame(True)
+    #plt.show()
 
-    #Now, apply track event selection
-    TGValidTrackInds = es.SingleTrackSelection(Sdf_MatchingPromptsMRD.loc[ThroughGoingCandidates].reset_index(drop=True),100,1.0,10)
-    print("VALID TRACK INDICES: " + str(TGValidTrackInds))
-    Sdf_TGValidTracks = Sdf_ThroughGoingCandidates.loc[TGValidTrackInds].reset_index(drop=True)
-    plt.hist(Sdf_TGValidTracks["clusterPE"], bins=40, range=(0,5000))
-    plt.title("Prompt cluster PE \n (Matching MRD cluster + one track + veto hit + track cuts)")
-    plt.xlabel("Cluster PE")
-    leg = plt.legend(loc=1,fontsize=24)
-    leg.set_frame_on(True)
-    leg.draw_frame(True)
-    plt.show()
+    ##Now, apply track event selection
+    #TGValidTrackInds = es.SingleTrackSelection(Sdf_MatchingPromptsMRD.loc[ThroughGoingCandidates].reset_index(drop=True),100,1.0,10)
+    #print("VALID TRACK INDICES: " + str(TGValidTrackInds))
+    #Sdf_TGValidTracks = Sdf_ThroughGoingCandidates.loc[TGValidTrackInds].reset_index(drop=True)
+    #plt.hist(Sdf_TGValidTracks["clusterPE"], bins=40, range=(0,5000))
+    #plt.title("Prompt cluster PE \n (Matching MRD cluster + one track + veto hit + track cuts)")
+    #plt.xlabel("Cluster PE")
+    #leg = plt.legend(loc=1,fontsize=24)
+    #leg.set_frame_on(True)
+    #leg.draw_frame(True)
+    #plt.show()
 
-    #Now, apply aggressive track event selection
-    TGValidTrackInds = es.SingleTrackSelection(Sdf_MatchingPromptsMRD.loc[ThroughGoingCandidates].reset_index(drop=True),60,0.4,60)
-    Sdf_TGValidTracks = Sdf_ThroughGoingCandidates.loc[TGValidTrackInds].reset_index(drop=True)
-    Sdf_TGValidTracks = Sdf_TGValidTracks.loc[Sdf_TGValidTracks['clusterHits']>70].reset_index(drop=True)
-    plt.hist(Sdf_TGValidTracks["clusterPE"], bins=40, range=(0,5000))
-    plt.title("Prompt cluster PE, aggressive cuts \n (Matching MRD cluster + one track + veto hit + track cuts)")
-    plt.xlabel("Cluster PE")
-    leg = plt.legend(loc=1,fontsize=24)
-    leg.set_frame_on(True)
-    leg.draw_frame(True)
-    plt.show()
+    ##Now, apply aggressive track event selection
+    #TGValidTrackInds = es.SingleTrackSelection(Sdf_MatchingPromptsMRD.loc[ThroughGoingCandidates].reset_index(drop=True),60,0.4,60)
+    #Sdf_TGValidTracks = Sdf_ThroughGoingCandidates.loc[TGValidTrackInds].reset_index(drop=True)
+    #Sdf_TGValidTracks = Sdf_TGValidTracks.loc[Sdf_TGValidTracks['clusterHits']>70].reset_index(drop=True)
+    #plt.hist(Sdf_TGValidTracks["clusterPE"], bins=40, range=(0,5000))
+    #plt.title("Prompt cluster PE, aggressive cuts \n (Matching MRD cluster + one track + veto hit + track cuts)")
+    #plt.xlabel("Cluster PE")
+    #leg = plt.legend(loc=1,fontsize=24)
+    #leg.set_frame_on(True)
+    #leg.draw_frame(True)
+    #plt.show()
 
     #Let's estimate the visible energy for coincident Tank/Cluster events
     NoVetoHit = np.where(Sdf_MatchingPromptsMRD["vetoHit"].values==0)[0]
     OneTrack = np.where(Sdf_MatchingPromptsMRD["numClusterTracks"].values==1)[0]
     NuCandidates = np.intersect1d(NoVetoHit,OneTrack)
+    NuCandidates = NoVetoHit
     Sdf_NuCandidates = Sdf_MatchingPrompts.loc[NuCandidates].reset_index(drop=True)
     Sdf_NuCandidatesMRD = Sdf_MatchingPromptsMRD.loc[NuCandidates].reset_index(drop=True)
     NUC_PE = Sdf_NuCandidates['clusterPE'].values
@@ -170,9 +212,19 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
     NUC_TANKMEV = NUC_PE / PEPERMEV
     NUC_MRDENERGY = es.SingleTrackEnergies(Sdf_NuCandidatesMRD)
     VISIBLE_ENERGY = (NUC_TANKMEV + NUC_MRDENERGY)/1000
-    plt.hist(VISIBLE_ENERGY,bins=30,range=(0,4))
+    plt.hist(VISIBLE_ENERGY,bins=40,range=(0,4))
     plt.xlabel("Visible energy estimate [GeV]")
     plt.title("Visible energy for single track event in tank and MRD")
+    plt.show()
+
+
+    plt.hist(Sdf_maxPE['clusterTime'].values[TankIndices_match],bins=80,range=(0,2000),label="PMT clusters w/ matched MRD")
+    plt.hist(Sdf_NuCandidates['clusterTime'],bins=80,range=(0,2000),label="+ single track and no veto")
+    plt.title("Prompt window Tank cluster times \n (Highest PE cluster in event)")
+    plt.xlabel("Cluster time [ns]")
+    leg = plt.legend(loc=1,fontsize=24)
+    leg.set_frame_on(True)
+    leg.draw_frame(True)
     plt.show()
 
     #Last plots... Average delayed cluster multiplicity as a function of visible energy
@@ -180,7 +232,7 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
     NuEventClusters = es.FilterByEventTime(Sdf,Sdf_NuCandidates['eventTimeTank'].values)
     NuEventDelayedClusters = NuEventClusters.loc[NuEventClusters['clusterTime']>12000].reset_index(drop=True)
     energy_min = 0
-    energy_max = 3
+    energy_max = 2
     EnergyBins, ClusterMultiplicity,ClusterMultiplicity_unc = bp.EstimateEnergyPerClusterRelation(VISIBLE_ENERGY,
             NUC_EVENTTIMETANKS, NuEventDelayedClusters,energy_min,energy_max,10)
     plt.errorbar(EnergyBins, ClusterMultiplicity,yerr=ClusterMultiplicity_unc,linestyle='None',marker='o',markersize=10)
@@ -191,9 +243,9 @@ def BeamPlotDemo(PositionDict, Bdf, Bdf_trig):
 
 if __name__=='__main__':
 
-    mybkgbranches = ['eventNumber','eventTimeTank','clusterTime','hitT','hitQ','hitPE','clusterChargeBalance','clusterPE','clusterMaxPE','clusterChargePointY','SiPM1NPulses','SiPM2NPulses','clusterHits']
+    mybkgbranches = ['eventNumber','eventTimeTank','clusterTime','hitT','hitQ','hitPE','clusterChargeBalance','clusterPE','clusterMaxPE','clusterChargePointZ','SiPM1NPulses','SiPM2NPulses','clusterHits']
     mybkgtrigbranches = ['eventNumber','eventTimeTank','eventTimeMRD','vetoHit','SiPM1NPulses','SiPM2NPulses']
-    mybranches = ['eventNumber','eventTimeTank','clusterTime','hitT','hitQ','hitPE','clusterChargeBalance','clusterPE','clusterMaxPE','clusterChargePointY','clusterHits']
+    mybranches = ['eventNumber','eventTimeTank','clusterTime','hitT','hitQ','hitPE','clusterChargeBalance','clusterPE','clusterMaxPE','clusterChargePointZ','clusterChargePointX','clusterChargePointY','clusterHits']
     mytrigbranches = ['eventNumber','eventTimeTank','eventTimeMRD','vetoHit']
 
     myMRDbranches = ['eventNumber','eventTimeTank','eventTimeMRD','clusterTime','clusterHits','vetoHit',

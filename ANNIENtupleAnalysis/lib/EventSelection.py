@@ -79,6 +79,23 @@ def NoPromptClusters_WholeFile(df_cluster,df_trig,clusterTimeCut):
     CleanIndices = np.array(CleanIndices)
     return df_trig.loc[CleanIndices].reset_index(drop=True)
 
+def NoBurst_WholeFile(df_cluster,df_trig,timeWindowCut,clusterPECut):
+    '''
+    Return a filtered trigger DataFrame which has all triggers that have no
+    cluster with a PE greater than 200 for times later than timeWindowCut.'''
+    #Get Tank Trigger times that have a prompt cluster in the first two microseconds
+    DirtyEvents = []
+    for j in df_cluster.index.values:  #disgusting...
+        if df_cluster["clusterPE"][j] > clusterPECut and df_cluster["clusterTime"][j] >timeWindowCut:
+            DirtyEvents.append(df_cluster["eventTimeTank"][j])
+    #Get indices for trigger entries that don't have an event time in DirtyPromptEvents
+    CleanIndices = []
+    for j in df_trig.index.values:  #disgusting...
+        if df_trig["eventTimeTank"][j] not in DirtyEvents:
+            CleanIndices.append(j)
+    CleanIndices = np.array(CleanIndices)
+    return df_trig.loc[CleanIndices].reset_index(drop=True)
+
 def NoPromptClusters(df_cluster,clusterTimeCut):
     '''
     Return clusters from events that have no prompt cluster with a time earlier
@@ -91,6 +108,23 @@ def NoPromptClusters(df_cluster,clusterTimeCut):
     CleanIndices = []
     for j in df_cluster.index.values:  #disgusting...
         if df_cluster["eventTimeTank"][j] not in DirtyPromptEvents:
+            CleanIndices.append(j)
+    CleanIndices = np.array(CleanIndices)
+    return df_cluster.loc[CleanIndices].reset_index(drop=True)
+
+def NoBurstClusters(df_cluster,clusterTimeCut,maxPE):
+    '''
+    Return clusters from events that have no PE cluster with a time later than
+    than the TimeCut variable AND PE greater than the PE variable..
+    '''
+    DirtyEvents = []
+    for j in df_cluster.index.values:  #disgusting...
+        if df_cluster["clusterTime"][j] > clusterTimeCut and \
+        df_cluster["clusterPE"][j] > maxPE:
+            DirtyEvents.append(df_cluster["eventTimeTank"][j])
+    CleanIndices = []
+    for j in df_cluster.index.values:  #disgusting...
+        if df_cluster["eventTimeTank"][j] not in DirtyEvents:
             CleanIndices.append(j)
     CleanIndices = np.array(CleanIndices)
     return df_cluster.loc[CleanIndices].reset_index(drop=True)
@@ -153,6 +187,7 @@ def MaxPEClusters(df):
             CurrentEventNum = df["eventTimeTank"][j]
         else:
             if df["clusterPE"][j] > HighestPE:
+                HighestPE = df["clusterPE"][j]
                 HighestPE_index = j
     HighestPE_indices = np.array(HighestPE_indices)
     return df.loc[HighestPE_indices].reset_index(drop=True)

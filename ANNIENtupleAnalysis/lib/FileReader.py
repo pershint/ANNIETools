@@ -25,3 +25,15 @@ def ReadHistFile(fi):
     for b in bin_content:
         bin_zeros[b]+=bin_content[b]
     return bin_zeros,bin_lefts
+
+def ReadHistFileSimple(fi):
+    with open(fi,"r") as f:
+        lines = f.readlines()
+    bin_lefts = []
+    bins = []
+    for j,line in enumerate(lines):
+        binline = line.split(",")
+        bin_lefts.append(float(binline[0]))
+        bins.append(float(binline[1].rstrip("\n")))
+    return np.array(bins),np.array(bin_lefts)
+
