@@ -31,6 +31,8 @@ def WMPlots(Sdf,Bdf,Sdf_trig,Bdf_trig):
     All_PE = np.hstack(Sdf_SinglePulses['hitPE'])
     All_T = np.hstack(Sdf_SinglePulses['hitT'])
     All_ID = np.hstack(Sdf_SinglePulses['hitDetID'])
+
+
     WM = np.where((All_ID == 382) | (All_ID == 393) | (All_ID == 404))[0]
     LateTime = np.where(All_T>12000)[0]
     WMDelayed = np.intersect1d(LateTime,WM)
@@ -40,8 +42,18 @@ def WMPlots(Sdf,Bdf,Sdf_trig,Bdf_trig):
     plt.xlabel("Hit PE")
     plt.show()
 
-
     Sdf_Odd = Sdf_SinglePulses.loc[(Sdf_SinglePulses["clusterChargePointY"]>0.125)&(Sdf_SinglePulses["clusterChargePointY"]<0.2)].reset_index(drop=True)
+
+    HiCB_PE = np.hstack(Sdf_SinglePulses.loc[Sdf_SinglePulses['clusterChargeBalance']>0.9,"hitPE"])
+    HiCB_DetID = np.hstack(Sdf_SinglePulses.loc[Sdf_SinglePulses['clusterChargeBalance']>0.9,"hitDetID"])
+    plt.hist2d(HiCB_DetID,HiCB_PE, bins=(138,20),
+            range=[(331,469),(0,20)],
+            cmap = plt.cm.inferno)
+    plt.colorbar()
+    plt.title("PE distribution for all hits in clusters \n (No source, $t_{c}>12 \, \mu s$, CB>0.9)")
+    plt.xlabel("Tube ID")
+    plt.ylabel("PE")
+    plt.show()
 
     All_PE = np.hstack(Sdf_Odd['hitPE'])
     All_T = np.hstack(Sdf_Odd['hitT'])

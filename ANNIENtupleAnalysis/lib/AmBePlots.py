@@ -15,10 +15,30 @@ sns.set(font_scale=2.5)
 sns.set_style("whitegrid")
 sns.axes_style("darkgrid")
 xkcd_colors = ['teal','dark teal','light purple','purple','adobe','red']
+#xkcd_colors = xkcd_colors + ['blue' for x in range(11)]
 #xkcd_colors = ['light purple','purple','teal','dark teal','adobe','red']
 #xkcd_colors = ['dark teal','dark orange']
 #xkcd_colors = ['light blue','blue','pink','red','adobe','red']
 sns.set_palette(sns.xkcd_palette(xkcd_colors))
+
+
+def NiceBins(theax, bin_left,bin_right,value,color,llabel):
+    #xkcd_colors = [color for x in range(len(value)*2)]
+    #sns.set_palette(sns.xkcd_palette(xkcd_colors))
+    for j,val in enumerate(value):
+        if j == len(value)-1:
+            theax.plot([bin_left[j],bin_right[j]],[val,val],linewidth=6,linestyle='-',label=llabel)
+            theax.plot([bin_right[j],bin_right[j]],[val,0],linewidth=6,linestyle='-')
+            break
+        elif j == 0:
+            #ax.plot([0,bin_left[j]],[0,0],linewidth=6,linestyle='-')
+            theax.plot([bin_left[j],bin_left[j]],[0,val],linewidth=6,linestyle='-')
+            theax.plot([bin_left[j],bin_right[j]],[val,val],linewidth=6,linestyle='-')
+            theax.plot([bin_right[j],bin_right[j]],[val,value[j+1]],linewidth=6,linestyle='-')
+        else:
+            theax.plot([bin_left[j],bin_right[j]],[val,val],linewidth=6,linestyle='-')
+            theax.plot([bin_right[j],bin_right[j]],[val,value[j+1]],linewidth=6,linestyle='-')
+    return theax
 
 def MakeClusterMultiplicityPlot(df,df_trig):
     allEvents = df_trig['eventTimeTank'].values

@@ -45,12 +45,11 @@ def SingleSiPMPulsesDeltaT(df,TimeThreshold):
     DirtyTriggers = []
     for j in df.index.values:  #disgusting...
         TwoPulses = False
-        if df["SiPM1NPulses"][j]!=1 or df["SiPM1NPulses"][j]!=1:
+        if df["SiPM1NPulses"][j]!=1 or df["SiPM2NPulses"][j]!=1:
             DirtyTriggers.append(df["eventTimeTank"][j])
         else:
-            if TwoPulses:
-                if TwoPulses and abs(df["SiPMhitT"][j][0] - df["SiPMhitT"][1]) > TimeThreshold:
-                    DirtyTriggers.append(df["eventTimeTank"][j])
+            if abs(df["SiPMhitT"][j][0] - df["SiPMhitT"][j][1]) > TimeThreshold:
+                DirtyTriggers.append(df["eventTimeTank"][j])
     CleanIndices = []
     for j in df.index.values:  #disgusting...
         if df["eventTimeTank"][j] not in DirtyTriggers:
