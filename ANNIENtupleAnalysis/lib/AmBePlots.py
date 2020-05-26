@@ -15,10 +15,12 @@ sns.set(font_scale=2.5)
 sns.set_style("whitegrid")
 sns.axes_style("darkgrid")
 xkcd_colors = ['teal','dark teal','light purple','purple','adobe','red']
-#xkcd_colors = xkcd_colors + ['blue' for x in range(11)]
+#xkcd_colors = ['blue' for x in range(11)]
+#xkcd_colors = xkcd_colors + ['red' for x in range(11)]
 #xkcd_colors = ['light purple','purple','teal','dark teal','adobe','red']
 #xkcd_colors = ['dark teal','dark orange']
-#xkcd_colors = ['light blue','blue','pink','red','adobe','red']
+xkcd_colors = ['adobe','dark orange']
+#xkcd_colors = ['light blue','blue','pink','red','teal','dark teal','light purple','purple','adobe','dark orange']
 sns.set_palette(sns.xkcd_palette(xkcd_colors))
 
 
@@ -39,6 +41,32 @@ def NiceBins(theax, bin_left,bin_right,value,color,llabel):
             theax.plot([bin_left[j],bin_right[j]],[val,val],linewidth=6,linestyle='-')
             theax.plot([bin_right[j],bin_right[j]],[val,value[j+1]],linewidth=6,linestyle='-')
     return theax
+
+def SiPMClusterDifferences(df,SiPMTimeThreshold):
+    '''
+    For events with a single SiPM pulse in each SiPM, get the difference in the cluster time 
+    and each SiPM's peak time.  Return two arrays, one with the SiPM1 - cluster time difference and
+    the second with SiPM2 - cluster time difference.
+    '''
+    S1Delta = []
+    S2Delta = []
+    for j in df.index.values:  #disgusting...
+        TwoPulses = False
+        if df["SiPM1NPulses"][j]!=1 or df["SiPM2NPulses"][j]!=1:
+            continue
+        elif abs(df["SiPMhitT"][j][0] - df["SiPMhitT"][j][1]) > SiPMTimeThreshold:
+           continue 
+        clusterTime = df["clusterTime"][j]
+        print("SIPMNum: " + str(df["SiPMNum"][j]))
+        SiPM1_hit = np.where(np.array(df["SiPMNum"][j])==1.)[0]
+        SiPM2_hit = np.where(np.array(df["SiPMNum"][j])==2.)[0]
+        print("SiPM1_hit: " + str(SiPM1_hit))
+        S1_hitTime = np.array(df["SiPMhitT"][j])[SiPM1_hit][0]
+        S2_hitTime = np.array(df["SiPMhitT"][j])[SiPM2_hit][0]
+        S1Delta.append(S1_hitTime - clusterTime)
+        S2Delta.append(S2_hitTime - clusterTime)
+    return np.array(S1Delta),np.array(S2Delta)
+
 
 def MakeClusterMultiplicityPlot(df,df_trig):
     allEvents = df_trig['eventTimeTank'].values
@@ -64,6 +92,27 @@ def MakeClusterMultiplicityPlot(df,df_trig):
     zeros = np.zeros(len(zero_clusters))
     MultiplicityData = np.concatenate((ClusterMultiplicities,zeros))
     return MultiplicityData 
+
+def SiPMVariableSum(df,variable, labels, ranges):
+    '''
+    Return a dataframe with events that only have one SiPM pulse in each SiPM,
+    where the pulse peaks are within the TimeThreshold difference.
+    '''
+    TotalVariable = []
+    for j in df.index.values:  #disgusting...
+        TotalVariable.append(np.sum(df[variable][j]))
+    variableval = np.array(TotalVariable)
+    if 'llabel' in labels.keys():
+        plt.hist(variableval,bins=ranges['bins'],range=ranges['range'],alpha=0.5,histtype='stepfilled',linewidth=6)
+        plt.hist(variableval,bins=ranges['bins'],range=ranges['range'],alpha=0.75,histtype='step',label = labels['llabel'],linewidth=6)
+    else:
+        plt.hist(variableval,bins=ranges['bins'],range=ranges['range'],alpha=0.5,histtype='stepfilled',linewidth=6)
+        plt.hist(variableval,bins=ranges['bins'],range=ranges['range'],alpha=0.75,histtype='step',linewidth=6)
+    plt.xlabel(labels["xlabel"])
+    plt.ylabel(labels["ylabel"])
+    plt.title(labels["title"])
+
+
 
 def MakeSiPMVariableDistribution(df, variable, sipm_num, labels, ranges,SingleSiPMPulses):
     '''
@@ -135,6 +184,24 @@ def Make2DHist(df,xvariable,yvariable,labels,ranges):
     plt.xlabel(labels['xlabel'])
     plt.ylabel(labels['ylabel'])
 
+def Make2DHist_PEVsQ(df,labels,ranges):
+    clusterPEs = []
+    SiPMQ = []
+    for j in df.index.values:
+        if df['clusterTime'][j]>ranges['promptTime']:
+            continue
+        if df['clusterPE'][j]>ranges['xrange'][1]:
+            continue
+        clusterPEs.append(df['clusterPE'][j])
+        SiPMQ.append(np.sum(df['SiPMhitQ'][j]))
+    plt.hist2d(np.array(clusterPEs),np.array(SiPMQ), bins=(ranges['xbins'],ranges['ybins']),
+            range=[ranges['xrange'],ranges['yrange']],
+            cmap = plt.cm.inferno)
+    plt.colorbar()
+    plt.title(labels['title'])
+    plt.xlabel(labels['xlabel'])
+    plt.ylabel(labels['ylabel'])
+
 def MakeKDEPlot(df,xvariable,yvariable,labels,ranges):
     sns.kdeplot(df[xvariable],df[yvariable],shade=True,shade_lowest=False, Label=labels['llabel'],
             cmap=labels['color'],alpha=0.7)
@@ -152,9 +219,3 @@ def MakeKDEPlot(df,xvariable,yvariable,labels,ranges):
 #    plt.colorbar(cax=cbar_ax)
 #    g.fig.suptitle(labels['title'])
 #    plt.show()
-
-def ShowPlot():
-    leg = plt.legend(loc=4,fontsize=24)
-    leg.set_frame_on(True)
-    leg.draw_frame(True)
-    plt.show()

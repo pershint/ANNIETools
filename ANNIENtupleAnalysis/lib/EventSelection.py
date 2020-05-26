@@ -34,8 +34,7 @@ def SingleSiPMPulses(df):
     Return a dataframe with events that only have one SiPM pulse in each SiPM
     '''
     newdf = df.loc[(df["SiPM1NPulses"]==1) & (df["SiPM2NPulses"]==1)]
-    newdf.reset_index(drop=True)
-    return newdf
+    return newdf.reset_index(drop=True)
 
 def SingleSiPMPulsesDeltaT(df,TimeThreshold):
     '''
@@ -59,6 +58,60 @@ def SingleSiPMPulsesDeltaT(df,TimeThreshold):
     newdf.reset_index(drop=True)
     return newdf
 
+def SiPMCorrelatedPrompts(df,SiPMTimeThreshold,CTimeThreshold,promptWindow):
+    '''
+    Return a dataframe with clusters that occur within CTimeThreshold ns of 
+    two SiPM pulses (occurring within SiPMTimeThreshold) at any time earlier than 
+    the defined promptWindow time.
+    '''
+    DirtyTriggers = []
+    for j in df.index.values:  #disgusting...
+        TwoPulses = False
+        if df["SiPM1NPulses"][j]!=1 or df["SiPM2NPulses"][j]!=1:
+            DirtyTriggers.append(j)
+        elif abs(df["SiPMhitT"][j][0] - df["SiPMhitT"][j][1]) > SiPMTimeThreshold:
+            DirtyTriggers.append(j)
+        else:
+            SiPMMeanTime = (df["SiPMhitT"][j][0] + df["SiPMhitT"][j][1])/2.
+            if abs(df['clusterTime'][j]-SiPMMeanTime)> CTimeThreshold or df['clusterTime'][j]>promptWindow:
+                DirtyTriggers.append(j)
+    newdf = df.loc[~df.index.isin(DirtyTriggers)].reset_index(drop=True)
+    return newdf
+
+def SiPMCorrelatedPrompts_WholeFile(df_cluster,df_trig):
+    '''
+    Return a trigger DataFrame which shares eventTimeTank values with any of the 
+    df_cluster entries.
+    '''
+    #Get Tank Trigger times that have a prompt cluster in the first two microseconds
+    ClusterEventTimes = set(df_cluster["eventTimeTank"].values)
+    CleanIndices = []
+    for j in df_trig.index.values:  #disgusting...
+        if df_trig["eventTimeTank"][j] in ClusterEventTimes:
+            CleanIndices.append(j)
+    CleanIndices = np.array(CleanIndices)
+    return df_trig.loc[CleanIndices].reset_index(drop=True)
+
+
+def HasVetoHit_TankClusters(df_cluster,df_trig):
+    '''
+    Return a filtered trigger DataFrame which has all triggers that either
+    have no cluster at all, or only have clusters in the time greater than
+    clusterTimeCut.
+    '''
+    #Get Tank Trigger times that have a prompt cluster in the first two microseconds
+    VetoEvents = []
+    for j in df_trig.index.values:  #disgusting...
+        if df_trig["vetoHit"][j] == 1:
+            VetoEvents.append(df_trig["eventTimeTank"][j])
+    #Get indices for trigger entries that don't have an event time in DirtyPromptEvents
+    VetoTankClusters = []
+    for j in df_cluster.index.values:  #disgusting...
+        if df_cluster["eventTimeTank"][j] in VetoEvents:
+            VetoTankClusters.append(j)
+    VetoTankClusters = np.array(VetoTankClusters)
+    return df_cluster.loc[VetoTankClusters].reset_index(drop=True)
+
 def NoPromptClusters_WholeFile(df_cluster,df_trig,clusterTimeCut):
     '''
     Return a filtered trigger DataFrame which has all triggers that either
@@ -81,7 +134,7 @@ def NoPromptClusters_WholeFile(df_cluster,df_trig,clusterTimeCut):
 def NoBurst_WholeFile(df_cluster,df_trig,timeWindowCut,clusterPECut):
     '''
     Return a filtered trigger DataFrame which has all triggers that have no
-    cluster with a PE greater than 200 for times later than timeWindowCut.'''
+    cluster with a PE greater than clusterPECut input for times later than timeWindowCut.'''
     #Get Tank Trigger times that have a prompt cluster in the first two microseconds
     DirtyEvents = []
     for j in df_cluster.index.values:  #disgusting...
