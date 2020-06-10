@@ -14,8 +14,8 @@ sns.set_context('poster')
 sns.set(font_scale=2.5)
 sns.set_style("whitegrid")
 sns.axes_style("darkgrid")
-xkcd_colors = ['adobe','red','dark teal','purple']
-#xkcd_colors = ['dark red' for x in range(100)]
+#xkcd_colors = ['adobe','blue','red','dark teal','purple']
+xkcd_colors = ['dark red' for x in range(100)]
 sns.set_palette(sns.xkcd_palette(xkcd_colors))
 
 def GetBackMaxes(df,dname):

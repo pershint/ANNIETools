@@ -285,6 +285,11 @@ def PlotDemo(Sdf,Bdf,Sdf_trig,Bdf_trig):
     leg.draw_frame(True)
     plt.show()
 
+    #Calculate chi^2/ndof
+    chisq = np.sum(((hist - myy)**2)/hist)
+    ndof = np.size(hist)
+    print("CHISQ/NDOF: %s/%s"%(str(chisq),str(ndof)))
+
     #Find the baseline with the bin resolution used in Vincent's plot
     plt.hist(Sdf_CleanWindow['clusterTime'],75,range=(15000,65000),alpha=0.8)
     plt.show()

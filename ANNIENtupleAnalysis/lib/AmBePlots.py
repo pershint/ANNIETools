@@ -14,12 +14,12 @@ sns.set_context('poster')
 sns.set(font_scale=2.5)
 sns.set_style("whitegrid")
 sns.axes_style("darkgrid")
-xkcd_colors = ['teal','dark teal','light purple','purple','adobe','red']
+#xkcd_colors = ['teal','dark teal','light purple','purple','adobe','red']
 #xkcd_colors = ['blue' for x in range(11)]
 #xkcd_colors = xkcd_colors + ['red' for x in range(11)]
-#xkcd_colors = ['light purple','purple','teal','dark teal','adobe','red']
+xkcd_colors = ['light purple','purple','teal','dark teal','adobe','red']
 #xkcd_colors = ['dark teal','dark orange']
-xkcd_colors = ['adobe','dark orange']
+#xkcd_colors = ['adobe','dark orange']
 #xkcd_colors = ['light blue','blue','pink','red','teal','dark teal','light purple','purple','adobe','dark orange']
 sns.set_palette(sns.xkcd_palette(xkcd_colors))
 

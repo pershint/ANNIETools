@@ -35,13 +35,15 @@ def EstimateDarkRates(Sdf,Sdf_trig):
     plt.show()
 
     plt.hist(All_PE,bins=200,range=(0,50))
-    plt.title("PE distribution for all PMT hits \n (Acquisitions with no clusters only)")
+    plt.title("PE distribution for all PMT hits \n (AmBe background run 1718, housing in dark box)")
+    plt.ylabel("Number of hits")
     plt.xlabel("Hit PE")
     plt.show()
 
     plt.hist(All_T,bins=350,range=(0,70000))
-    plt.title("Hit time distribution for all PMT hits \n (Acquisitions with no clusters only)")
-    plt.xlabel("Hit PE")
+    plt.title("Hit time distribution for all PMT hits \n (AmBe background run 1718, housing in dark box)")
+    plt.ylabel("Number of hits")
+    plt.xlabel("Hit time (ns)")
     plt.show()
 
     #Still some prompt activity in window; let's only use the last 50 microseconds
@@ -69,14 +71,39 @@ def EstimateDarkRates(Sdf,Sdf_trig):
     plt.hist(hit_counts,bins=30,histtype='stepfilled',range=(0,10000),linewidth=6)
     #plt.hist(hit_counts,bins=30,alpha=0.75,histtype='step',range=(0,10000),linewidth=6)
 
-    plt.title("Total number of hits for each PMT \n (Acquisitions with no clusters only,$t_{hit}>20 \, \mu s$)")
+    plt.title("Total number of hits for each PMT \n (All PMT hits with $t_{hit}>20 \, \mu s$)")
     plt.xlabel("Number of hits")
     plt.show()
 
     plt.hist(dark_rate,bins=30, histtype='stepfilled',range=(0,30000))
     #plt.hist(dark_rate,bins=30,alpha=0.75,histtype='step',range=(0,30000))
-    plt.title("Total number of hits for each PMT \n (Acquisitions with no clusters only,$t_{hit}>20 \, \mu s$)")
+    plt.title("Total number of hits for each PMT \n (All PMT hits with $t_{hit}>20 \, \mu s$)")
     plt.xlabel("Dark count rate (Hz)")
+    plt.ylabel("Number of PMTs")
+    plt.show()
+
+    wm_hit_counts = []
+    wm_dark_rate = []
+    WM_IDs = [382,393,404]
+    print("ALL HIT IDS SEEN: " + str(WM_IDs))
+    for theid in WM_IDs:
+        IDhits = np.where(late_ID==theid)[0]
+        IDnumhits = len(late_ID[IDhits])
+        wm_hit_counts.append(IDnumhits)
+        wm_dark_rate.append(IDnumhits/Acquisition_Time)
+    
+    plt.hist(wm_hit_counts,bins=30,histtype='stepfilled',range=(0,10000),linewidth=6)
+    #plt.hist(hit_counts,bins=30,alpha=0.75,histtype='step',range=(0,10000),linewidth=6)
+
+    plt.title("Total number of hits for WATCHMAN tubes \n (All PMT hits with $t_{hit}>20 \, \mu s$)")
+    plt.xlabel("Number of hits")
+    plt.show()
+
+    plt.hist(wm_dark_rate,bins=30, histtype='stepfilled',range=(0,30000))
+    #plt.hist(dark_rate,bins=30,alpha=0.75,histtype='step',range=(0,30000))
+    plt.title("Total number of hits for WATCHMAN tubes \n (All PMT hits with $t_{hit}>20 \, \mu s$)")
+    plt.xlabel("Dark count rate (Hz)")
+    plt.ylabel("Number of PMTs")
     plt.show()
 
 if __name__=='__main__':

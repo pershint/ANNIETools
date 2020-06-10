@@ -54,14 +54,44 @@ def BeamPlotDemo(PositionDict,MCdf):
     #  - clusterPE>10 and clusterChargeBalance<0.4 and plot the time distribution
 
 
-    Sdf_prompt = Sdf.loc[Sdf['clusterTime']<2000].reset_index(drop=True)
+    Sdf_prompt_noCB = Sdf.loc[Sdf['clusterTime']<2000].reset_index(drop=True)
+    Sdf_prompt = Sdf_prompt_noCB.loc[Sdf_prompt_noCB['clusterChargeBalance']<0.9].reset_index(drop=True)
     plt.hist(Sdf_prompt['clusterTime'],bins=100,range=(0,2000))
     plt.title("Prompt window Tank cluster times")
     plt.xlabel("Cluster time [ns]")
     plt.show()
+    print("TOTAL PROMPT TANK CLUSTERS, NO CB: " + str(len(Sdf_prompt_noCB)))
     print("TOTAL PROMPT TANK CLUSTERS: " + str(len(Sdf_prompt)))
     print("TOTAL PROMPT MRD CLUSTERS: " + str(len(Sdf_mrd)))
-    
+   
+    labels = {'title': 'Charge balance parameters in time window \n (Beam data, $t_{c}<2 \, \mu s$)', 
+            'xlabel': 'Cluster time (ns)', 'ylabel': 'Charge balance'}
+    ranges = {'xbins': 40, 'ybins':40, 'xrange':[0,2000],'yrange':[0,1]}
+    #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
+    abp.Make2DHist(Sdf_prompt_noCB,'clusterTime','clusterChargeBalance',labels,ranges)
+    plt.show()
+
+    labels = {'title': 'Tank PMT hit cluster count as a function of time \n (Beam data, $t_{c}<2 \, \mu s$)', 
+            'xlabel': 'Cluster time (ns)', 'ylabel': 'Cluster PE'}
+    ranges = {'xbins': 40, 'ybins':250, 'xrange':[0,2000],'yrange':[0,500]}
+    #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
+    abp.Make2DHist(Sdf_prompt_noCB,'clusterTime','clusterPE',labels,ranges)
+    plt.show()
+
+    labels = {'title': 'Tank PMT hit cluster count as a function of time \n (Beam data, $t_{c}<2 \, \mu s$)', 
+            'xlabel': 'Cluster time (ns)', 'ylabel': 'Cluster PE'}
+    ranges = {'xbins': 40, 'ybins':250, 'xrange':[0,2000],'yrange':[500,5000]}
+    #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
+    abp.Make2DHist(Sdf_prompt_noCB,'clusterTime','clusterPE',labels,ranges)
+    plt.show()
+
+    labels = {'title': 'Tank PMT hit cluster count as a function of time \n (Beam data, $t_{c}<2 \, \mu s$)', 
+            'xlabel': 'Cluster time (ns)', 'ylabel': 'Cluster PE'}
+    ranges = {'xbins': 40, 'ybins':25, 'xrange':[0,2000],'yrange':[0,5000]}
+    #abp.MakeHexJointPlot(Sdf,'clusterPE','clusterChargeBalance',labels,ranges)
+    abp.Make2DHist(Sdf_prompt_noCB,'clusterTime','clusterPE',labels,ranges)
+    plt.show()
+
     plt.hist(Sdf_mrd['clusterTime'].values,bins=80,range=(0,4000),label="All MRD clusters")
     plt.title("Prompt window MRD cluster times")
     plt.xlabel("Cluster time [ns]")
@@ -122,9 +152,9 @@ def BeamPlotDemo(PositionDict,MCdf):
     leg.draw_frame(True)
     plt.show()
 
-
-    plt.hist(Sdf_prompt['clusterTime'].values,bins=80,range=(0,2000),label="All Tank clusters")
-    plt.hist(Sdf_maxPE['clusterTime'].values,bins=80,range=(0,2000),label="Tank clusters with highest PE")
+    plt.hist(Sdf_prompt_noCB['clusterTime'].values,bins=80,range=(0,2000),label="All Tank clusters")
+    plt.hist(Sdf_prompt['clusterTime'].values,bins=80,range=(0,2000),label="+ CB<0.9")
+    plt.hist(Sdf_maxPE['clusterTime'].values,bins=80,range=(0,2000),label="+ cluster with highest PE")
     #plt.hist(Sdf_maxPE['clusterTime'].values[TankIndices],bins=80,range=(0,2000),label="+ MRD Cluster Match")
     plt.hist(Sdf_maxPE['clusterTime'].values[TankIndices_match],bins=80,range=(0,2000),label="+ MRD cluster match")
     plt.title("Prompt window Tank cluster times \n event selection impact")
@@ -228,6 +258,7 @@ def BeamPlotDemo(PositionDict,MCdf):
     VISIBLE_ENERGY = (NUC_TANKMEV + NUC_MRDENERGY)/1000
     plt.hist(VISIBLE_ENERGY,bins=40,range=(0,4))
     plt.xlabel("Visible energy estimate [GeV]")
+    plt.ylabel("Normalized count rate (A.U.)")
     plt.title("Visible energy for single track event in tank and MRD")
     plt.show()
 
@@ -261,8 +292,9 @@ def BeamPlotDemo(PositionDict,MCdf):
     #plt.hist(mc_energy,density=True,bins=20,range=(0,2),label='$E_{\mu}$ MC Truth')
     #plt.hist(VISIBLE_ENERGY,normed=True,bins=20,range=(0,2), label='Beam data')
     plt.xlabel("Visible energy estimate [GeV]")
-    plt.ylabel("Arb. units")
-    plt.title("Visible energy of neutrino interaction candidates \n compared to MC truth information")
+    plt.ylabel("Normalized count rate (A.U.)")
+    #plt.title("Visible energy of neutrino interaction candidates \n compared to MC truth information")
+    plt.title("Visible energy of neutrino interaction candidates")
     leg = plt.legend(loc=1,fontsize=24)
     leg.set_frame_on(True)
     leg.draw_frame(True)
