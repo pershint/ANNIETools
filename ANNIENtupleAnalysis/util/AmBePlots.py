@@ -16,8 +16,8 @@ import matplotlib.pyplot as plt
 import scipy.optimize as scp
 import numpy as np
 
-MCDELTAT = "./Data/MCProfiles/DeltaTHistAmBe.csv"
-MCPE = "./Data/MCProfiles/PEHistAmBe.csv"
+MCDELTAT = "./Data/V3_5PE100ns/MCProfiles/DeltaTHistAmBe.csv"
+MCPE = "./Data/V3_5PE100ns/MCProfiles/PEHistAmBe.csv"
 
 SIGNAL_DIR = "./Data/V3_5PE100ns/Pos0Data/"
 #BKG_DIR = "./Data/BkgCentralData/"
