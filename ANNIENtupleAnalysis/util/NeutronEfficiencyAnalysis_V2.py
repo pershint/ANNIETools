@@ -15,25 +15,26 @@ import scipy.optimize as scp
 import numpy as np
 import scipy.special as scm
 
-SIGNAL_DIR = "./Data/V3_5PE100ns/Pos0Data/"
-BKG_DIR = "./Data/V3_5PE100ns/BkgPos0Data/"
+SIGNAL_DIR = "./Data/V1/CentralData/"
+BKG_DIR = "./Data/V1/BkgCentralData/"
 POSITION_TO_ANALYZE = "Position 0"
 
 #POS0, NO UNCORR BKG: 64% Nu eff, 25$ gamma eff, 3200 Hz rate
 #POS1, NO UNCORR BKG: 57% Nu eff, 20$ gamma eff, 3200 Hz rate
 #POS2, NO UNCORR BKG: 46% Nu eff, 20$ gamma eff, 3600 Hz rate
 #POS3, NO UNCORR BKG: 36% neu eff, 0% gamma eff, 5600 Hz rate
+#NRateRanges = {'Position 0': np.arange(3000,3800,200), 'Position 1': np.arange(3000,3600,200),
+#        'Position 2': np.arange(3600,4400,200), 'Position 3': np.arange(5400,6200,200)}
+
 #Some good starting efficiency ranges; these ranges were seen in the first analysis
-NEffRanges = {'Position 0': np.arange(0.62,0.67,0.01), 'Position 1': np.arange(0.54,0.61,0.01),
-        'Position 2': np.arange(0.42, 0.50, 0.01), 'Position 3': np.arange(0.34,0.40, 0.01)}
-GEffRanges = {'Position 0': np.arange(0.1,0.65,0.05), 'Position 1': np.arange(0.0,0.45,0.05),
-        'Position 2': np.arange(0.15,0.50,0.05), 'Position 3': np.arange(0.0,0.3,0.05)}
-NRateRanges = {'Position 0': np.arange(3000,3800,200), 'Position 1': np.arange(3000,3600,200),
-        'Position 2': np.arange(3600,4400,200), 'Position 3': np.arange(5400,6200,200)}
+NEffRanges = {'Position 0': np.arange(0.60,0.68,0.01), 'Position 1': np.arange(0.52,0.61,0.01),
+        'Position 2': np.arange(0.42, 0.50, 0.01), 'Position 3': np.arange(0.32,0.40, 0.01)}
+GEffRanges = {'Position 0': np.arange(0.4,0.9,0.05), 'Position 1': np.arange(0.3,0.8,0.05),
+        'Position 2': np.arange(0.25,0.75,0.05), 'Position 3': np.arange(0.2,0.7,0.05)}
 BkgUncorrRanges = {'Position 0': np.arange(0.055,0.0725,0.0025), 'Position 1': np.arange(0.055,0.085,0.005),
         'Position 2': np.arange(0.055,0.085,0.005), 'Position 3': np.arange(0.055,0.085,0.005)}
-BkgRanges = {'Position 0': np.arange(0.025,0.0525,0.0025), 'Position 1': np.arange(0.060,0.080,0.005),
-        'Position 2': np.arange(0.065,0.07,0.005), 'Position 3': np.arange(0.065,0.07,0.005)}
+BkgRanges = {'Position 0': np.arange(0.03,0.070,0.0025), 'Position 1': np.arange(0.04,0.080,0.005),
+        'Position 2': np.arange(0.04, 0.080,0.005), 'Position 3': np.arange(0.04,0.080,0.005)}
 
 
 expoPFlat= lambda x,C1,tau,mu,B: C1*np.exp(-(x-mu)/tau) + B
@@ -118,9 +119,8 @@ def EstimateNeutronEfficiency(Sdf, Sdf_trig):
     PLBuilder3D.SetGammaEffProfile(gamma_efficiencies)
     #background_mean = np.array([0.060])
     #PLBuilder3D.SetBkgMeanProfile(background_mean)
-    PLBuilder3D.SetSourceRate(600.0)
-    #PLBuilder3D.SetBkgMeanProfile(BkgRanges[POSITION_TO_ANALYZE]) #ORIGINAL
-    PLBuilder3D.SetBkgMeanProfile(NRateRanges[POSITION_TO_ANALYZE])
+    PLBuilder3D.SetSourceRate(200.0)
+    PLBuilder3D.SetBkgMeanProfile(BkgRanges[POSITION_TO_ANALYZE])
     x_var, y_var, z_var, ChiSquare,lowestChiSqProfile = PLBuilder3D.BuildLikelihoodProfile(Sbins_normed,Sbins_normed_unc,NUMTHROWS)
     print("MINIMUM CHI SQUARE: " + str(np.min(ChiSquare)))
     min_index = np.where(ChiSquare==np.min(ChiSquare))[0]

@@ -211,8 +211,7 @@ class ProfileLikelihoodBuilder3D(object):
         '''
         neu_eff = ProfileValues[0]
         gamma_eff = ProfileValues[1]
-        #bkg_rate = ProfileValues[2] #ORIGINAL
-        source_rate = ProfileValues[2]
+        bkg_rate = ProfileValues[2]
         #Get trigger-correlated neutron multiplicity
         neutron_counts = np.zeros(int(randShoots))
         neutroneff_randos = np.random.random(int(randShoots))
@@ -220,18 +219,16 @@ class ProfileLikelihoodBuilder3D(object):
         neutron_counts[saw_neutrons]+=1
 
         #Get uncorrelated background component
-        #bkg_counts = np.random.poisson(bkg_rate,int(randShoots)) #ORIGINAL
+        bkg_counts = np.random.poisson(bkg_rate,int(randShoots))
 
         #Get uncorrelated neutron count
-        #mean_n_mult = self.source_rate * (1-self.gamma_prob) * self.window_size  #ORIGINAL
-        mean_n_mult = source_rate * (1-self.gamma_prob) * self.window_size 
+        mean_n_mult = self.source_rate * (1-self.gamma_prob) * self.window_size
         uncorr_neutron_counts = np.random.poisson(mean_n_mult*neu_eff,int(randShoots))
 
         #Get uncorrelated gamma-neutron count
         uncorr_gamman_counts = self.CalculateGammaNMultiplicity(gamma_eff,neu_eff,randShoots)
 
-        #cluster_counts = neutron_counts  + uncorr_neutron_counts + uncorr_gamman_counts + bkg_counts #ORIGINAL
-        cluster_counts = neutron_counts  + uncorr_neutron_counts + uncorr_gamman_counts #+ bkg_counts
+        cluster_counts = neutron_counts  + uncorr_neutron_counts + uncorr_gamman_counts + bkg_counts
         Profile,Profile_edges = np.histogram(cluster_counts,range=(0,len(SignalDistribution)),bins=len(SignalDistribution))
         Profile_normed = Profile/np.sum(Profile)
         return Profile_normed
