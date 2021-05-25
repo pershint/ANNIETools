@@ -63,8 +63,8 @@ class ROOTProcessor(object):
         seen_data = []
         for dattype in all_data:
                 if branches_to_get is not 'all':
-                    #if dattype.decode('utf-8') not in branches_to_get: 
-                    if dattype not in branches_to_get: 
+                    if dattype.decode('utf-8') not in branches_to_get: 
+                    #if dattype not in branches_to_get: 
                         continue
                 if dattype not in seen_data: #Hack to ignore duplicate ntuple entries
                     seen_data.append(dattype)
@@ -83,8 +83,8 @@ class ROOTProcessor(object):
             thistype_processed [array]
             numpy array of data pulled from a ROOT file using uproot.
         '''
-        #dattype_key = dattype.decode('utf-8')
-        dattype_key = dattype
+        dattype_key = dattype.decode('utf-8')
+        #dattype_key = dattype
         if dattype_key in self.processed_data:
             thistype_proclist = thistype_processed.tolist()
             self.processed_data[dattype_key] = self.processed_data[dattype_key] + \
