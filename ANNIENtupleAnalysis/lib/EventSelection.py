@@ -36,6 +36,20 @@ def SingleSiPMPulses(df):
     newdf = df.loc[(df["SiPM1NPulses"]==1) & (df["SiPM2NPulses"]==1)]
     return newdf.reset_index(drop=True)
 
+def SiPMChargeCut(df,ChargeMin,ChargeMax):
+    '''
+    Return a dataframe with events that only have a total SiPM hit charge within the ChargeMin and
+    ChargeMax variable inputs.
+    '''
+    CleanIndices = []
+    for j in df.index.values:  #disgusting...
+        if np.sum(df["SiPMhitQ"][j])>float(ChargeMin) and np.sum(df["SiPMhitQ"][j])<float(ChargeMax):
+            CleanIndices.append(j)
+    CleanIndices = np.array(CleanIndices)
+    newdf = df.loc[CleanIndices]
+    newdf.reset_index(drop=True)
+    return newdf
+
 def SingleSiPMPulsesDeltaT(df,TimeThreshold):
     '''
     Return a dataframe with events that only have one SiPM pulse in each SiPM,
