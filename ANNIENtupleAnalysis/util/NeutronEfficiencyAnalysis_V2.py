@@ -29,9 +29,9 @@ POSITION_TO_ANALYZE = "Position 0"
 #Some good starting efficiency ranges; these ranges were seen in the first analysis
 NEffRanges = {'Position 0': np.arange(0.60,0.68,0.01), 'Position 1': np.arange(0.52,0.61,0.01),
         'Position 2': np.arange(0.42, 0.50, 0.01), 'Position 3': np.arange(0.32,0.40, 0.01)}
-GEffRanges = {'Position 0': np.arange(0.4,0.9,0.05), 'Position 1': np.arange(0.3,0.8,0.05),
+GEffRanges = {'Position 0': np.arange(0.5,1.0,0.05), 'Position 1': np.arange(0.3,0.8,0.05),
         'Position 2': np.arange(0.25,0.75,0.05), 'Position 3': np.arange(0.2,0.7,0.05)}
-BkgMeanRanges = {'Position 0': np.arange(0.03,0.070,0.0025), 'Position 1': np.arange(0.04,0.080,0.005),
+BkgMeanRanges = {'Position 0': np.arange(0.045,0.085,0.0025), 'Position 1': np.arange(0.04,0.080,0.005),
         'Position 2': np.arange(0.04, 0.080,0.005), 'Position 3': np.arange(0.04,0.080,0.005)}
 
 
@@ -58,10 +58,12 @@ def EstimateNeutronEfficiency(Sdf, Sdf_trig):
     Sdf_CleanPrompt = es.NoPromptClusters(Sdf_SinglePulses,SIGNAL_WINDOW_START)
     Sdf_CleanWindow = es.NoBurstClusters(Sdf_CleanPrompt,SIGNAL_WINDOW_START,150)
     Sdf_CleanWindow_noCB = Sdf_CleanWindow.loc[Sdf_CleanWindow["clusterChargeBalance"]<0.4].reset_index(drop=True)
+    Sdf_ChargeCut = es.SiPMChargeCut(Sdf_CleanWindow_noCB,0.1,0.5)
     Sdf_trig_SinglePulses = Sdf_trig.loc[(Sdf_trig['SiPM1NPulses']==1) & (Sdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
     Sdf_trig_CleanPrompt = es.NoPromptClusters_WholeFile(Sdf_SinglePulses,Sdf_trig_SinglePulses,2000)
     Sdf_trig_CleanWindow = es.NoBurst_WholeFile(Sdf_CleanPrompt,Sdf_trig_CleanPrompt,2000,150)
-    MSData = abp.MakeClusterMultiplicityPlot(Sdf_CleanWindow_noCB,Sdf_trig_CleanWindow)
+    Sdf_trig_ChargeCut = es.SiPMChargeCut(Sdf_trig_CleanWindow,0.1,0.5)
+    MSData = abp.MakeClusterMultiplicityPlot(Sdf_ChargeCut,Sdf_trig_ChargeCut)
     #plt.hist(MSData,bins=20, range=(0,20), alpha=0.2,histtype='stepfilled',linewidth=6)
     #plt.hist(MSData,bins=20, range=(0,20), histtype='step',linewidth=6)
     #plt.xlabel("Neutron candidate multiplicity")
@@ -243,9 +245,14 @@ if __name__=='__main__':
     livetime_estimate = es.EstimateLivetime(slist)
     print("SIGNAL LIVETIME ESTIMATE IN SECONDS IS: " + str(livetime_estimate))
     
-    mybranches = ['eventNumber','eventTimeTank','clusterTime','clusterChargeBalance','SiPM1NPulses','SiPM2NPulses','clusterPE']
+    mybranches = ['eventNumber','eventTimeTank','clusterTime','clusterChargeBalance','SiPM1NPulses','SiPM2NPulses','clusterPE','SiPMhitQ']
     Sdf = GetDataFrame("phaseIITankClusterTree",mybranches,slist)
     Sdf_trig = GetDataFrame("phaseIITriggerTree",mybranches,slist)
+    #There's some issue in the trigger tree processing... pulses were double-counted
+    #Fix this by removing duplicates (probability of two SiPM pulses actually having
+    #The exact same charge is zero, so this correction shouldn't affect actual pulses)
+    for i in Sdf_trig.index.values:
+        Sdf_trig['SiPMhitQ'][i] = list(set(Sdf_trig['SiPMhitQ'][i]))
 
     EstimateNeutronEfficiency(Sdf,Sdf_trig)
 
