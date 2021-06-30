@@ -15,10 +15,10 @@ import scipy.optimize as scp
 import numpy as np
 import scipy.special as scm
 
-SIGNAL_DIR = "./Data/V3_5PE100ns/Pos0Data/"
-BKG_DIR = "./Data/V3_5PE100ns/BkgPos0Data/"
-#SIGNAL_DIR = "./Data/CentralData2020/Source/"
-#BKG_DIR = "./Data/CentralData2020//"
+#SIGNAL_DIR = "./Data/V3_5PE100ns/Pos0Data/"
+#BKG_DIR = "./Data/V3_5PE100ns/BkgPos0Data/"
+SIGNAL_DIR = "./Data/CentralData2020/Source/"
+BKG_DIR = "./Data/CentralData2020/Background/"
 POSITION_TO_ANALYZE = "Position 0"
 
 #POS0, NO UNCORR BKG: 64% Nu eff, 25$ gamma eff, 3200 Hz rate
@@ -64,28 +64,34 @@ def GetDataFrame(mytreename,mybranches,filelist):
 def EstimateNeutronEfficiency(Sdf, Sdf_trig):
 
     #Apply event selection cuts to source data
-    Sdf_SinglePulses = es.SingleSiPMPulses(Sdf)
-    Sdf_CleanPrompt = es.NoPromptClusters(Sdf_SinglePulses,SIGNAL_WINDOW_START)
-    Sdf_CleanWindow = es.NoBurstClusters(Sdf_CleanPrompt,SIGNAL_WINDOW_START,150)
-    Sdf_CleanWindow_noCB = Sdf_CleanWindow.loc[Sdf_CleanWindow["clusterChargeBalance"]<0.8].reset_index(drop=True)
-    Sdf_ChargeCut = es.SiPMChargeCut(Sdf_CleanWindow_noCB,0.05,0.25)
+    Sdf_SinglePulses = Sdf.loc[(Sdf['SiPM1NPulses']==1)].reset_index(drop=True) #Require 1 pulse only in SiPM1
+    Sdf_SiPM1GoodTime = es.SingleSiPMTimeCut(Sdf_SinglePulses,250,750,1) #Require pulse to be between 250-750 ns
+    Sdf_CleanPrompt = es.NoPromptClusters(Sdf_SiPM1GoodTime,SIGNAL_WINDOW_START) #Require no cluster in first 2 microseconds
+    Sdf_CleanWindow = es.NoBurstClusters(Sdf_CleanPrompt,SIGNAL_WINDOW_START,150) #Require no cluster PE>150 in delayed window
+    Sdf_CleanWindow_noCB = Sdf_CleanWindow.loc[Sdf_CleanWindow["clusterChargeBalance"]<0.8].reset_index(drop=True) #Remove hit clusters with high CB
+    Sdf_ChargeCut = es.SingleSiPMChargeCut(Sdf_CleanWindow_noCB,0.01,0.1,1) #Require
+
     Sdf_trig_SinglePulses = Sdf_trig.loc[(Sdf_trig['SiPM1NPulses']==1) & (Sdf_trig['SiPM2NPulses']==1)].reset_index(drop=True)
-    Sdf_trig_CleanPrompt = es.NoPromptClusters_WholeFile(Sdf_SinglePulses,Sdf_trig_SinglePulses,2000)
-    Sdf_trig_CleanWindow = es.NoBurst_WholeFile(Sdf_CleanPrompt,Sdf_trig_CleanPrompt,2000,150)
-    Sdf_trig_ChargeCut = es.SiPMChargeCut(Sdf_trig_CleanWindow,0.05,0.25)
+    Sdf_trig_SiPM1GoodTime = es.SingleSiPMTimeCut(Sdf_trig_SinglePulses,250,750,1) #Require pulse to be between 250-750 ns
+    Sdf_trig_CleanPrompt = es.NoPromptClusters_WholeFile(Sdf_SiPM1GoodTime,Sdf_trig_SiPM1GoodTime,SIGNAL_WINDOW_START)
+    Sdf_trig_CleanWindow = es.NoBurst_WholeFile(Sdf_CleanPrompt,Sdf_trig_CleanPrompt,SIGNAL_WINDOW_START,150)
+    Sdf_trig_ChargeCut = es.SingleSiPMChargeCut(Sdf_trig_CleanWindow,0.01,0.1,1)
+
     MSData = abp.MakeClusterMultiplicityPlot(Sdf_ChargeCut,Sdf_trig_ChargeCut)
     sphist = []
-    for entry in Sdf_trig_SinglePulses['SiPMhitQ']:
-        sphist.append(np.sum(entry))
-    plt.hist(sphist,range=[0,1],bins=30)
-    plt.title("Summed SiPM charge before charge cut (events with one pulse in each SiPM")
+    for j in Sdf_trig_SinglePulses['SiPMhitQ'].index.values:  
+        SiPMInds = np.where(np.array(Sdf_trig_SinglePulses["SiPMNum"][j]) == 1)[0]
+        sphist.append(np.sum(np.array(Sdf_trig_SinglePulses['SiPMhitQ'][j])[SiPMInds]))
+    plt.hist(sphist,range=[0,0.4],bins=50)
+    plt.title("SiPM1 charge before charge cut (Require single pulse in SiPM for trigger)")
     plt.show()
 
     sphist = []
-    for entry in Sdf_trig_CleanWindow['SiPMhitQ']:
-        sphist.append(np.sum(entry))
-    plt.hist(sphist,range=[0,1],bins=30)
-    plt.title("Summed SiPM charge before charge cut (All Prelim. Cuts Applied)")
+    for j in Sdf_trig_CleanWindow['SiPMhitQ'].index.values:  
+        SiPMInds = np.where(np.array(Sdf_trig_CleanWindow["SiPMNum"][j]) == 1)[0]
+        sphist.append(np.sum(np.array(Sdf_trig_CleanWindow['SiPMhitQ'][j])[SiPMInds]))
+    plt.hist(sphist,range=[0,0.4],bins=50)
+    plt.title("SiPM1 charge before charge cut (All Prelim. Cuts Applied)")
     plt.show()
     #plt.hist(MSData,bins=20, range=(0,20), alpha=0.2,histtype='stepfilled',linewidth=6)
     #plt.hist(MSData,bins=20, range=(0,20), histtype='step',linewidth=6)
@@ -141,6 +147,42 @@ def EstimateNeutronEfficiency(Sdf, Sdf_trig):
     plt.title("Best fit MC profile relative to central source data")
     plt.xlabel("Delayed cluster multiplicity")
     plt.show()
+
+    #----------------------------    
+    #----------------------------    
+    #----------------------------    
+    #---- Addition I made
+    
+    #    index = ChiSquare.index(np.min(ChiSquare))
+    Upper_Statistical = 0
+    Lower_Statistical = 0
+    
+    for i in range(min_index[0],len(ChiSquare)):
+        if (ChiSquare[i] > np.min(ChiSquare)+1.0):
+            Upper_Statistical = x_var[i] - x_var[min_index[0]]
+            print("Eff of upper:    ",x_var[i])
+            break
+
+    for i in range(min_index[0],0,-1):
+        if (ChiSquare[i] > np.min(ChiSquare)+1.0):
+            Lower_Statistical = x_var[min_index[0]] - x_var[i]
+            print("Eff of lower:    ",x_var[i])
+            break
+
+    f = open("Efficieny.txt", "a")
+    f.write(str(sys.argv[1])+" "+str(x_var[min_index])+"\n")
+    f.close()
+
+    f = open("Efficieny_Upper_Statistic.txt", "a")
+    f.write(str(sys.argv[1])+" "+str(Upper_Statistical)+"\n")
+    f.close()
+
+    f = open("Efficieny_Lower_Statistic.txt", "a")
+    f.write(str(sys.argv[1])+" "+str(Lower_Statistical)+"\n")
+    f.close()
+    #----------------------------    
+    #----------------------------    
+    #----------------------------    
 
     #Look at 2D chi-squared map
     best_bkg_indices = np.where(z_var==z_var[min_index])[0]
@@ -260,12 +302,13 @@ def EstimateNeutronEfficiency(Sdf, Sdf_trig):
 
 
 if __name__=='__main__':
-    slist = glob.glob(SIGNAL_DIR+"*.ntuple.root")
+    #slist = glob.glob(SIGNAL_DIR+"*.ntuple.root")
+    slist = glob.glob(BKG_DIR+"*.ntuple.root")
 
     livetime_estimate = es.EstimateLivetime(slist)
     print("SIGNAL LIVETIME ESTIMATE IN SECONDS IS: " + str(livetime_estimate))
     
-    mybranches = ['eventNumber','eventTimeTank','clusterTime','clusterChargeBalance','SiPM1NPulses','SiPM2NPulses','clusterPE','SiPMhitQ']
+    mybranches = ['eventNumber','eventTimeTank','clusterTime','clusterChargeBalance','SiPM1NPulses','SiPM2NPulses','clusterPE','SiPMhitQ','SiPMhitT','SiPMNum','SiPMhitAmplitude']
     Sdf = GetDataFrame("phaseIITankClusterTree",mybranches,slist)
     Sdf_trig = GetDataFrame("phaseIITriggerTree",mybranches,slist)
     #There's some issue in the trigger tree processing... pulses were double-counted
@@ -273,6 +316,10 @@ if __name__=='__main__':
     #The exact same charge is zero, so this correction shouldn't affect actual pulses)
     for i in Sdf_trig.index.values:
         Sdf_trig['SiPMhitQ'][i] = list(set(Sdf_trig['SiPMhitQ'][i]))
+        Sdf_trig['SiPMhitQ'][i] = list(set(Sdf_trig['SiPMhitQ'][i]))
+        Sdf_trig['SiPMhitT'][i] = list(set(Sdf_trig['SiPMhitT'][i]))
+        Sdf_trig['SiPMhitAmplitude'][i] = list(set(Sdf_trig['SiPMhitAmplitude'][i]))
+        Sdf_trig['SiPMNum'][i] = list(set(Sdf_trig['SiPMNum'][i]))
 
     EstimateNeutronEfficiency(Sdf,Sdf_trig)
 

@@ -50,6 +50,42 @@ def SiPMChargeCut(df,ChargeMin,ChargeMax):
     newdf.reset_index(drop=True)
     return newdf
 
+def SingleSiPMTimeCut(df,TimeMin,TimeMax,SiPMNum):
+    '''
+    Return a dataframe with events that only have a total SiPM hit charge within the ChargeMin and
+    ChargeMax variable inputs.
+    '''
+    DirtyIndices = []
+    for j in df.index.values:  #disgusting...
+        SiPMInds = np.where(np.array(df["SiPMNum"][j]) == SiPMNum)[0]
+        for ind in SiPMInds:
+            if (df["SiPMhitT"][j][ind])<float(TimeMin) or (df["SiPMhitT"][j][ind])>float(TimeMax):
+                DirtyIndices.append(j)
+    CleanIndices = []
+    for j in df.index.values:  #disgusting...
+        if df["eventTimeTank"][j] not in DirtyIndices:
+            CleanIndices.append(j)
+    CleanIndices = np.array(CleanIndices)
+    newdf = df.loc[CleanIndices]
+    newdf.reset_index(drop=True)
+    return newdf
+
+def SingleSiPMChargeCut(df,ChargeMin,ChargeMax,SiPMNum):
+    '''
+    Return a dataframe with events that only have a total SiPM hit charge within the ChargeMin and
+    ChargeMax variable inputs.
+    '''
+    CleanIndices = []
+    for j in df.index.values:  #disgusting...
+        SiPMInds = np.where(np.array(df["SiPMNum"][j]) == SiPMNum)[0]
+
+        if np.sum(np.array(df["SiPMhitQ"][j])[SiPMInds])>float(ChargeMin) and np.sum(np.array(df["SiPMhitQ"][j])[SiPMInds])<float(ChargeMax):
+            CleanIndices.append(j)
+    CleanIndices = np.array(CleanIndices)
+    newdf = df.loc[CleanIndices]
+    newdf.reset_index(drop=True)
+    return newdf
+
 def SingleSiPMPulsesDeltaT(df,TimeThreshold):
     '''
     Return a dataframe with events that only have one SiPM pulse in each SiPM,
