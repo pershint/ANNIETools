@@ -5,7 +5,7 @@ import json
 import numpy as np
 import math
 
-import lib.Detector as d
+from . import Detector as d
 
 sns.set_context('poster')
 sns.set(font_scale=2.0)
@@ -16,9 +16,7 @@ REFERENCE_TUBE = 381
 VC = 0.2998 #meters per nanosecond
 n = 1.34  #index of refraction in water
 
-if __name__=='__main__':
-
-    DetectorFile = "./DB/FullTankPMTGeometry_Corrected.csv"
+def EstimateVisualizeRelativeDelays(DetectorFile,PeakFitDict):
     PMTGetter = d.TankPMTLoader()
     PMTGetter.ParseTankGeoFile(DetectorFile)
     pmtpos = PMTGetter.GetPMTPositions()
@@ -27,19 +25,19 @@ if __name__=='__main__':
     print("PMT POSNS: " + str(pmtpos))
     print("LED POSNS: " + str(ledpos))
 
-    with open("PeakFitResults.json","r") as f:
-        dat = json.load(f)
+    dat = PeakFitDict
     df = pd.DataFrame(dat)
     TUBES = np.array(list(set(df["channel"])))
-    TUBES = np.arange(332,466,1)
+    TUBES = np.arange(332,464,1)
     fig,ax = plt.subplots()
     LEDs = np.arange(0,6,1)
     channel_delays = {}
     for led in LEDs:
         ref_pos = np.linalg.norm(np.array(pmtpos[REFERENCE_TUBE]) - np.array(ledpos[led]))
         print("REFERENCE POS: " + str(ref_pos))
-        #ref_time = df[(df.LED==led) & (df.channel == REFERENCE_TUBE)].mu.values -(ref_pos*n/VC) #Use compare all tubes to REFERENCE_TUBE's time fo this LED
-        ref_time = df[(df.LED==led) & (df.channel == REFERENCE_TUBE)].mu.values
+        #ref_time = df[(df.LED==led) & (df.channel == REFERENCE_TUBE)].mu.values -(ref_pos*n/VC) #CORRECT FOR LIGHT PROPAGATION TIME
+        ref_time = df[(df.LED==led) & (df.channel == REFERENCE_TUBE)].mu.values[0]
+        ref_mean = df[(df.LED==led) & (df.channel == REFERENCE_TUBE)].mu.values[0]
         print("REF TIME: " + str(ref_time))
         myx = []
         myy = []
@@ -48,8 +46,8 @@ if __name__=='__main__':
             if cnum not in list(df["channel"]):
                 print("DID NOT FIND ANY DATA FOR CHANNELNUM %i"%(cnum))
                 continue
-            #delay = df[((df["LED"] == led) & (df["channel"]==cnum))].mu.values - avgtime
             delay = df[((df["LED"] == led) & (df["channel"]==cnum))].mu.values - ref_time
+            #TRIES TO CORRECT FOR LIGHT PROPAGATION TIME
             #thispmt_transittime = np.linalg.norm(np.array(pmtpos[cnum]) - np.array(ledpos[led]))*n/VC
             #delay = df[((df["LED"] == led) & (df["channel"]==cnum))].mu.values -thispmt_transittime - ref_time
             if(len(delay)<1):
@@ -65,8 +63,7 @@ if __name__=='__main__':
             else:
                 channel_delays[cnum].append(delay)
         ax.errorbar(np.array(myx),np.array(myy),xerr=np.array(myxunc),alpha=0.8,label="LED %i Delays"%(led),linestyle='None',marker='o',markersize=6)
-    print("ch delAYS: " + str(channel_delays)) 
-    print("AVG OF 332: " + str(np.average(channel_delays[332])))
+    
     #Now, calculate each channel's mean delay relative to the reference tube
     Earliest_mean = 999999
     for channel in channel_delays:
@@ -79,8 +76,10 @@ if __name__=='__main__':
     for channel in channel_delays:
         print("CHANNEL: " + str(channel))
         final_channels.append(channel)
-        print("MEAN,%i,%f"%(channel,np.average(channel_delays[channel]) - Earliest_mean))
-        final_delays.append(np.average(channel_delays[channel]) - Earliest_mean)
+        #print("MEAN,%i,%f"%(channel,np.average(channel_delays[channel]) - Earliest_mean))
+        #final_delays.append(np.average(channel_delays[channel]) - Earliest_mean)
+        print("MEAN,%i,%f"%(channel,np.average(channel_delays[channel]) - ref_mean))
+        final_delays.append(np.average(channel_delays[channel]) - ref_mean)
         print("STD,%i,%f"%(channel,np.std(channel_delays[channel])))
         final_delay_uncs.append(np.std(channel_delays[channel]))
     #ax.bar(y = myy,x = range(len(myx)), yerr = myyerr,label = cnum)
@@ -106,13 +105,12 @@ if __name__=='__main__':
     plt.title(("Mean of all 6 LED arrival times to each PMT"))
     plt.show()
 
-
     CableDelays = {}
     CableDelayUncs = {}
     for j,cnum in enumerate(final_channels):
-        CableDelays[str(cnum)] = final_delays[j] 
+        CableDelays[str(cnum)] = final_delays[j]
         CableDelayUncs[str(cnum)] = final_delay_uncs[j]
-    with open("RelativeDelays.json","w") as f:
+    with open("./output/RelativeDelays.json","w") as f:
         json.dump(CableDelays,f,sort_keys=True,indent=4)
-    with open("RelativeDelayUncs.json","w") as fu:
+    with open("./output/RelativeDelayUncs.json","w") as fu:
         json.dump(CableDelayUncs,fu,sort_keys=True,indent=4)
